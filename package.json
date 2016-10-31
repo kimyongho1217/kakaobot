@@ -4,11 +4,11 @@
   "description": "kakao yellowid chatbot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/nerdyfactory/kakaobot"
   },
   "author": "nerdyfactory",
   "license": "ISC",
