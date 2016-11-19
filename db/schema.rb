@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161016163346) do
+ActiveRecord::Schema.define(version: 20161119173146) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,54 @@ ActiveRecord::Schema.define(version: 20161016163346) do
   add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
+
+  create_table "foods", force: :cascade do |t|
+    t.string   "name",               null: false
+    t.integer  "unit_calorie"
+    t.string   "unit"
+    t.text     "description"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "foods", ["name"], name: "index_foods_on_name", using: :btree
+
+  create_table "kakao_users", force: :cascade do |t|
+    t.string   "user_key",                                 null: false
+    t.boolean  "active",                    default: true, null: false
+    t.integer  "age"
+    t.integer  "height"
+    t.integer  "weight"
+    t.integer  "daily_calorie_consumption"
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "kakao_users", ["user_key"], name: "index_kakao_users_on_user_key", using: :btree
+
+  create_table "meal_foods", force: :cascade do |t|
+    t.integer  "meal_id"
+    t.integer  "food_id"
+    t.integer  "number_of_unit"
+    t.integer  "calorie_consumption"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  add_index "meal_foods", ["meal_id"], name: "index_meal_foods_on_meal_id", using: :btree
+
+  create_table "meals", force: :cascade do |t|
+    t.integer  "user_id",             null: false
+    t.integer  "calorie_consumption"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  add_index "meals", ["user_id"], name: "index_meals_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
