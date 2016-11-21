@@ -3,6 +3,7 @@ class CreateKakaoUsers < ActiveRecord::Migration
     create_table :kakao_users do |t|
       t.string      :user_key, null: false
       t.boolean     :active, null: false, default: true
+      t.string      :sex
       t.integer     :age
       t.integer     :height
       t.integer     :weight

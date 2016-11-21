@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20161120122852) do
   create_table "kakao_users", force: :cascade do |t|
     t.string   "user_key",                                           null: false
     t.boolean  "active",                              default: true, null: false
+    t.string   "sex"
     t.integer  "age"
     t.integer  "height"
     t.integer  "weight"
