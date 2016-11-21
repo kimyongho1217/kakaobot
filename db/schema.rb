@@ -54,14 +54,15 @@ ActiveRecord::Schema.define(version: 20161120122852) do
   add_index "foods", ["name"], name: "index_foods_on_name", using: :btree
 
   create_table "kakao_users", force: :cascade do |t|
-    t.string   "user_key",                                 null: false
-    t.boolean  "active",                    default: true, null: false
+    t.string   "user_key",                                           null: false
+    t.boolean  "active",                              default: true, null: false
     t.integer  "age"
     t.integer  "height"
     t.integer  "weight"
     t.integer  "daily_calorie_consumption"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.integer  "recommend_daily_calorie_consumption"
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
   end
 
   add_index "kakao_users", ["user_key"], name: "index_kakao_users_on_user_key", using: :btree
