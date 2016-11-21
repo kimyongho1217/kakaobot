@@ -3,7 +3,8 @@ class CreateMealFoods < ActiveRecord::Migration
     create_table :meal_foods do |t|
       t.references  :meal
       t.references  :food
-      t.integer     :number_of_unit
+      t.references  :food_unit
+      t.integer     :count
       t.integer     :calorie_consumption
       t.timestamps null: false
     end

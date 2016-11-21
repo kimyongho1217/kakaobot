@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161119173146) do
+ActiveRecord::Schema.define(version: 20161120122852) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,10 +31,17 @@ ActiveRecord::Schema.define(version: 20161119173146) do
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
+  create_table "food_units", force: :cascade do |t|
+    t.string   "name",            null: false
+    t.integer  "weight_per_unit", null: false
+    t.integer  "food_id",         null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
   create_table "foods", force: :cascade do |t|
     t.string   "name",               null: false
-    t.integer  "unit_calorie"
-    t.string   "unit"
+    t.integer  "calorie"
     t.text     "description"
     t.string   "image_file_name"
     t.string   "image_content_type"
@@ -62,7 +69,8 @@ ActiveRecord::Schema.define(version: 20161119173146) do
   create_table "meal_foods", force: :cascade do |t|
     t.integer  "meal_id"
     t.integer  "food_id"
-    t.integer  "number_of_unit"
+    t.integer  "food_unit_id"
+    t.integer  "count"
     t.integer  "calorie_consumption"
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
