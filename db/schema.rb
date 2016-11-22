@@ -41,7 +41,16 @@ ActiveRecord::Schema.define(version: 20161120122852) do
 
   create_table "foods", force: :cascade do |t|
     t.string   "name",               null: false
-    t.integer  "calorie"
+    t.integer  "calorie",            null: false
+    t.integer  "weight",             null: false
+    t.integer  "carbohydrate"
+    t.integer  "protein"
+    t.integer  "fat"
+    t.integer  "sugars"
+    t.integer  "sodium"
+    t.integer  "cholesterol"
+    t.integer  "saturated_fat"
+    t.integer  "trans_fat"
     t.text     "description"
     t.string   "image_file_name"
     t.string   "image_content_type"
@@ -54,40 +63,40 @@ ActiveRecord::Schema.define(version: 20161120122852) do
   add_index "foods", ["name"], name: "index_foods_on_name", using: :btree
 
   create_table "kakao_users", force: :cascade do |t|
-    t.string   "user_key",                          null: false
-    t.boolean  "active",             default: true, null: false
+    t.string   "user_key",                            null: false
+    t.boolean  "active",               default: true, null: false
     t.string   "sex"
     t.integer  "age"
     t.integer  "height"
     t.integer  "weight"
     t.integer  "consumed_calories"
-    t.integer  "recommend_calories"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.integer  "recommended_calories"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
   end
 
   add_index "kakao_users", ["user_key"], name: "index_kakao_users_on_user_key", using: :btree
 
   create_table "meal_foods", force: :cascade do |t|
-    t.integer  "meal_id"
-    t.integer  "food_id"
-    t.integer  "food_unit_id"
-    t.integer  "count"
-    t.integer  "calorie_consumption"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
+    t.integer  "meal_id",                         null: false
+    t.integer  "food_id",                         null: false
+    t.integer  "food_unit_id",                    null: false
+    t.integer  "count",                           null: false
+    t.integer  "calorie_consumption", default: 0
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   add_index "meal_foods", ["meal_id"], name: "index_meal_foods_on_meal_id", using: :btree
 
   create_table "meals", force: :cascade do |t|
-    t.integer  "user_id",             null: false
-    t.integer  "calorie_consumption"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
+    t.integer  "kakao_user_id",                         null: false
+    t.integer  "total_calorie_consumption", default: 0
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
   end
 
-  add_index "meals", ["user_id"], name: "index_meals_on_user_id", using: :btree
+  add_index "meals", ["kakao_user_id"], name: "index_meals_on_kakao_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
