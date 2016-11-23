@@ -64,3 +64,4 @@ gem 'active_model_serializers', '~> 0.9.0'
 gem 'puma'
 gem 'paperclip'
 gem 'wit'
+gem "active_admin_import"
