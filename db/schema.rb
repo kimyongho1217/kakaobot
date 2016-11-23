@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161120122852) do
+ActiveRecord::Schema.define(version: 20161123164819) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,16 +41,16 @@ ActiveRecord::Schema.define(version: 20161120122852) do
 
   create_table "foods", force: :cascade do |t|
     t.string   "name",               null: false
-    t.integer  "calorie",            null: false
-    t.integer  "weight",             null: false
-    t.integer  "carbohydrate"
-    t.integer  "protein"
-    t.integer  "fat"
-    t.integer  "sugars"
-    t.integer  "sodium"
-    t.integer  "cholesterol"
-    t.integer  "saturated_fat"
-    t.integer  "trans_fat"
+    t.decimal  "weight",             null: false
+    t.decimal  "calorie",            null: false
+    t.decimal  "carbohydrate"
+    t.decimal  "protein"
+    t.decimal  "fat"
+    t.decimal  "sugars"
+    t.decimal  "sodium"
+    t.decimal  "cholesterol"
+    t.decimal  "saturated_fat"
+    t.decimal  "trans_fat"
     t.text     "description"
     t.string   "image_file_name"
     t.string   "image_content_type"
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 20161120122852) do
     t.datetime "updated_at",         null: false
   end
 
-  add_index "foods", ["name"], name: "index_foods_on_name", using: :btree
+  add_index "foods", ["name"], name: "index_foods_on_name", unique: true, using: :btree
 
   create_table "kakao_users", force: :cascade do |t|
     t.string   "user_key",                            null: false
