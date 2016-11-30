@@ -1,13 +1,13 @@
 FactoryGirl.define do
   factory :food, aliases: [:hamburger] do
-    name "햄버거"
+    sequence(:name) { |n| "햄버거#{n}" } 
     weight 100
-    calorie 294.9
+    calorie 294
     description "햄버거"
   end
 
   factory :pizza, class: Food do
-    name "피자"
+    sequence(:name) { |n| "피자#{n}" } 
     weight 100
     calorie 266
     description "피자"

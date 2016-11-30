@@ -32,21 +32,20 @@ ActiveRecord::Schema.define(version: 20161130041000) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "food_units", force: :cascade do |t|
-    t.string   "name",                            null: false
-    t.integer  "weight_per_unit",                 null: false
-    t.integer  "food_id",                         null: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.boolean  "wit_added",       default: false
-    t.string   "synonyms",        default: [],                 array: true
+    t.string   "name",                         null: false
+    t.integer  "weight_per_unit",              null: false
+    t.integer  "food_id",                      null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.string   "synonyms",        default: [],              array: true
   end
 
   add_index "food_units", ["synonyms"], name: "index_food_units_on_synonyms", using: :gin
 
   create_table "foods", force: :cascade do |t|
-    t.string   "name",                               null: false
-    t.decimal  "weight",                             null: false
-    t.decimal  "calorie",                            null: false
+    t.string   "name",                            null: false
+    t.decimal  "weight",                          null: false
+    t.decimal  "calorie",                         null: false
     t.decimal  "carbohydrate"
     t.decimal  "protein"
     t.decimal  "fat"
@@ -60,10 +59,9 @@ ActiveRecord::Schema.define(version: 20161130041000) do
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.boolean  "wit_added",          default: false
-    t.string   "synonyms",           default: [],                 array: true
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.string   "synonyms",           default: [],              array: true
   end
 
   add_index "foods", ["name"], name: "index_foods_on_name", unique: true, using: :btree

@@ -39,6 +39,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'factory_girl_rails', "~> 4.0"
   gem 'faker' 
+  gem 'webmock'
 end
 
 group :development do
