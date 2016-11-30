@@ -23,7 +23,7 @@ set :deploy_to, '/var/www/rails_app'
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', '.env')
 
 # Default value for linked_dirs is []
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
@@ -61,5 +61,16 @@ set :puma_init_active_record, false
 set :puma_preload_app, true
 set :puma_plugins, []  #accept array of plugins
 set :nginx_use_ssl, false
+
+#dot env
+namespace :dotenv do
+
+  desc "Upload .env to stage"
+  task :upload do
+    on roles :web do
+      upload! ".env", "#{shared_path}/.env"
+    end
+  end
+end
 
 after "deploy", "puma:restart"
