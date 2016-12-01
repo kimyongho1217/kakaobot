@@ -40,19 +40,45 @@ ActiveAdmin.register Food do
   end
 
 
-
-# See permitted parameters documentation:
-# https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-#
-# permit_params :list, :of, :attributes, :on, :model
-#
-# or
-#
-# permit_params do
-#   permitted = [:permitted, :attributes]
-#   permitted << :other if resource.something?
-#   permitted
-# end
-
-
+  show do
+    attributes_table do
+      row :name
+      row :synonyms_raw, as: :text
+      row :weight
+      row :calorie
+      row :carbohydrate
+      row :protein
+      row :fat
+      row :sugars
+      row :sodium
+      row :cholesterol
+      row :saturated_fat
+      row 'Units' do |n|
+        columns do
+          column do
+           b "Name"
+          end
+          column do
+            b "Weight Per Unit"
+          end
+          column do
+            b "Synonyms"
+          end
+        end
+        food.food_units.each do |food_unit|
+          columns do
+            column do
+              food_unit.name
+            end
+            column do
+              food_unit.weight_per_unit
+            end
+            column do
+              food_unit.synonyms_raw
+            end
+          end
+        end
+      end
+    end
+  end
 end

@@ -1,5 +1,5 @@
 ActiveAdmin.register FoodUnit do
-  permit_params :name, :weight_per_unit, :synonyms_raw
+  permit_params :name, :weight_per_unit, :synonyms_raw, :food_id
   form do |f|
     f.inputs "Food" do
       f.input :food, member_label: :name

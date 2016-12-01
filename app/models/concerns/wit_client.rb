@@ -1,8 +1,6 @@
 module WitClient
   extend ActiveSupport::Concern
   included do
-    after_create :send_to_wit
-
     after_save do |instance|
       next unless instance.name_changed? or instance.synonyms_changed?
       if instance.name_changed?
@@ -13,8 +11,8 @@ module WitClient
       instance.send_to_wit
     end
 
-    after_destroy do |me|
-      wit_client.delete_values(me.class.name, me.name)
+    after_destroy do |instance|
+      wit_client.delete_values(instance.class.name, instance.name)
     end
 
     @actions = {
