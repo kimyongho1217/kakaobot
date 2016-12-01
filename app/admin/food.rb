@@ -5,6 +5,8 @@ ActiveAdmin.register Food do
       import.csv_lines.uniq! {|line| line.first }
     }
 
+  permit_params :name, :synonyms_raw, :weight, :calorie, :carbohydrate, :protein, :fat, :sugars, :sodium, :cholesterol, :saturated_fat, :image
+
   index do
     selectable_column
     id_column
@@ -13,8 +15,31 @@ ActiveAdmin.register Food do
     column :calorie
     column :created_at
     column :updated_at
+    column  :image do |currency|
+      image_tag currency.image.url(:thumb)
+    end
     actions
   end
+
+  form do |f|
+    f.inputs "Food Details" do
+      f.input :name
+      f.input :synonyms_raw, as: :text
+      f.input :weight
+      f.input :calorie
+      f.input :carbohydrate
+      f.input :protein
+      f.input :fat
+      f.input :sugars
+      f.input :sodium
+      f.input :cholesterol
+      f.input :saturated_fat
+      f.input :image, :as => :file, :hint => image_tag(f.object.image.url(:medium))
+    end
+    f.actions
+  end
+
+
 
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters

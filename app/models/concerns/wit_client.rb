@@ -3,14 +3,14 @@ module WitClient
   included do
     after_create :send_to_wit
 
-    after_save do |me|
-      return unless me.name_changed? or me.synonyms_changed?
-      if me.name_changed?
-        wit_client.delete_values(me.class.name, me.name_was) unless me.name_was.nil?
+    after_save do |instance|
+      next unless instance.name_changed? or instance.synonyms_changed?
+      if instance.name_changed?
+        wit_client.delete_values(instance.class.name, instance.name_was) unless instance.name_was.nil?
       else
-        wit_client.delete_values(me.class.name, me.name)
+        wit_client.delete_values(instance.class.name, instance.name_was)
       end
-      me.send_to_wit
+      instance.send_to_wit
     end
 
     after_destroy do |me|
@@ -23,6 +23,8 @@ module WitClient
       }
     }
     @wit ||= Wit.new(access_token: ENV['WIT_TOKEN'], actions: @actions)
+
+    attr_accessor   :names_raw
 
   end
 
@@ -41,6 +43,15 @@ module WitClient
       value: name,
       expressions: synonyms
     })
+  end
+
+  def synonyms_raw
+    self.synonyms.join("\n")
+  end
+
+  def synonyms_raw=(values)
+    self.synonyms = []
+    self.synonyms = values.split("\r\n")
   end
 
   private
