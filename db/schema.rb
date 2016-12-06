@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161130041000) do
+ActiveRecord::Schema.define(version: 20161206031754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,12 +74,14 @@ ActiveRecord::Schema.define(version: 20161130041000) do
     t.integer  "age"
     t.integer  "height"
     t.integer  "weight"
-    t.integer  "consumed_calories"
-    t.integer  "recommended_calories"
+    t.integer  "recommended_calories", default: 0
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.json     "context"
+    t.string   "session_id"
   end
 
+  add_index "kakao_users", ["session_id"], name: "index_kakao_users_on_session_id", using: :btree
   add_index "kakao_users", ["user_key"], name: "index_kakao_users_on_user_key", using: :btree
 
   create_table "meal_foods", force: :cascade do |t|
@@ -99,8 +101,10 @@ ActiveRecord::Schema.define(version: 20161130041000) do
     t.integer  "total_calorie_consumption", default: 0
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
+    t.datetime "ate_at"
   end
 
+  add_index "meals", ["ate_at"], name: "index_meals_on_ate_at", using: :btree
   add_index "meals", ["kakao_user_id"], name: "index_meals_on_kakao_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|

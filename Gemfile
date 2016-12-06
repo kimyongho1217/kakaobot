@@ -66,5 +66,5 @@ gem 'active_model_serializers', '~> 0.9.0'
 gem 'puma'
 gem 'paperclip'
 #gem 'wit'
-gem "wit", github: "nerdyfactory/wit-ruby", branch: "entities-CRUD-operation"
+gem "wit", github: "wit-ai/wit-ruby", branch: "master"
 gem "active_admin_import", github: "activeadmin-plugins/active_admin_import", branch: 'master'

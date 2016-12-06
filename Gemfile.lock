@@ -10,9 +10,9 @@ GIT
       rubyzip (~> 1.2)
 
 GIT
-  remote: git://github.com/nerdyfactory/wit-ruby.git
-  revision: 3a9bd6409539bc2408ad046e67f3f58d61f1f0a9
-  branch: entities-CRUD-operation
+  remote: git://github.com/wit-ai/wit-ruby.git
+  revision: 71e3f9504fc41e1622f10afb9eb3ddf6ca59048c
+  branch: master
   specs:
     wit (5.0.0)
 

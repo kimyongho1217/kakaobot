@@ -7,8 +7,7 @@ class CreateKakaoUsers < ActiveRecord::Migration
       t.integer     :age
       t.integer     :height
       t.integer     :weight
-      t.integer     :consumed_calories
-      t.integer     :recommended_calories
+      t.integer     :recommended_calories, default: 0
       t.timestamps null: false
     end
     add_index :kakao_users, :user_key
