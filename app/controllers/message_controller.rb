@@ -25,7 +25,7 @@ class MessageController < ApplicationController
 
   def eat_food(request)
     entities = serialize_entities(request['entities'])
-    context = request['context']
+    context = {}
     unless entities['Food'] 
       context['missingFood'] = true
       return context
@@ -58,15 +58,15 @@ class MessageController < ApplicationController
 
   def get_calories(request)
     entities = serialize_entities(request['entities'])
-    context = request['context']
-    context.merge! entities
+    context = {}
 
-    if %w[sex age weight height].any? {|k| context[k].present? }
+    if %w[sex age weight height].any? {|k| entities[k].present? }
       @kakao_user.sex = entities['sex'] if entities['sex']
       @kakao_user.age = entities['number'] if entities['age']
       @kakao_user.height = entities['number'] if entities['height']
       @kakao_user.weight = entities['number'] if entities['weight']
       @kakao_user.save
+      @kakao_user.reload
     end
 
     if @kakao_user.recommended_calories <= 0

@@ -1,6 +1,6 @@
 class KeyboardController < ApplicationController
   def show
-    render json: { type: "buttons", buttons: ["선택1", "선택2"] }
+    render json: { type: "buttons", buttons: ["칼로리를 알려줘"] }
   end
 
 end

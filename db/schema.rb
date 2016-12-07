@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161206031754) do
+ActiveRecord::Schema.define(version: 20161207131527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,7 +77,6 @@ ActiveRecord::Schema.define(version: 20161206031754) do
     t.integer  "recommended_calories", default: 0
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
-    t.json     "context"
     t.string   "session_id"
   end
 
