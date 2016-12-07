@@ -8,7 +8,7 @@ class MessageController < ApplicationController
   private
   def wit_client
     @wit ||= Wit.new(access_token: ENV['WIT_TOKEN'], actions: {
-      send: -> (request, response) { send(request, response) },
+      send: -> (request, response) { send_to_kakao(request, response) },
       getCalories: -> (request) { get_calories(request) },
       eatFoods: -> (request) { eat_food(request) }
     })
@@ -16,7 +16,7 @@ class MessageController < ApplicationController
     @wit
   end
 
-  def send(request, response)
+  def send_to_kakao(request, response)
     render json: { message: { text: response['text'] } }
   end
 
