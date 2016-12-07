@@ -21,9 +21,8 @@ require 'webmock/rspec'
 WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
-
   config.before(:each) do
-    stub_request(:any, /https:\/\/api\.wit\.ai*+/)
+    @stub = stub_request(:any, /https:\/\/api\.wit\.ai*+/)
     .to_return(status: 200, body: {}.to_s, headers: {})
   end
 

@@ -5,10 +5,22 @@ RSpec.describe MessageController, type: :controller do
   let(:kakao_user) { create(:kakao_user) }
 
   describe "#create" do
-    it "returns correct json" do
-      post :create, user_key: :user_key, type: "text", content: "테스트"
-      json_body = JSON.parse(response.body)
-      expect(json_body["message"]["text"]).to eq("챗봇앱이 준비중입니다")
+    #let(:wit_responses) { JSON.parse(File.read("fixtures/wit_responses.json")) }
+    context "with wit.ai" do
+      it "ask food information when it is missed" do
+      end
+
+      it "ask unit information when it is missed" do
+      end
+
+      it "says calories consumed when all information is accessiable" do
+      end
+
+      it "create meal when user says eat something" do
+      end
+
+      it "create meal_food when user says eat something" do
+      end
     end
 
     it "create kakao user if it doesn't exist" do

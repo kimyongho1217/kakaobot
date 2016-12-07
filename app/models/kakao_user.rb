@@ -16,7 +16,7 @@ class KakaoUser < ActiveRecord::Base
   private
   def calculate_recommended_calories!
     return if !age_changed? and !sex_changed? and !height_changed? and !weight_changed?
-    if [age, height, weight].any? { |item| item <= 0 } or sex.nil?
+    if [age, height, weight].any? { |item| item.nil? or item <= 0 } or sex.blank?
       recommended_calories = 0
     else
       if sex == "male"

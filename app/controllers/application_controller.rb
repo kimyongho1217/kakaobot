@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
   before_filter :set_kakao_user
+  around_filter :transaction_wrap
+
   def access_denied(exception)
     reset_session
     redirect_to :root, :alert => exception.message
@@ -12,4 +14,12 @@ class ApplicationController < ActionController::Base
     @kakao_user.active = true unless @kakao_user.active?
     @kakao_user.save if @kakao_user.changed?
   end
+
+  def transaction_wrap
+    ActiveRecord::Base.transaction do
+      yield
+    end
+  end
+
+
 end
