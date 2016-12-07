@@ -1,26 +1,23 @@
 class MessageController < ApplicationController
 
   def create
-    context = wit_client.run_actions(@kakao_user.session_id, params[:content], @kakao_user.context || {})
-    @kakao_user.context = context
+    wit_client.run_actions(@kakao_user.session_id, params[:content], {})
     @kakao_user.save if @kakao_user.changed?
   end
 
   private
   def wit_client
     @wit ||= Wit.new(access_token: ENV['WIT_TOKEN'], actions: {
-      send: -> (request, response) {
-        render json: { message: { text: response['text'] } }
-      },
-      getCalories: -> (request) {
-        get_calories(request)
-      },
-      eatFoods: -> (request) {
-        eat_food(request)
-      }
+      send: -> (request, response) { send(request, response) },
+      getCalories: -> (request) { get_calories(request) },
+      eatFoods: -> (request) { eat_food(request) }
     })
     @wit.logger.level = Logger::DEBUG
     @wit
+  end
+
+  def send(request, response)
+    render json: { message: { text: response['text'] } }
   end
 
   def eat_food(request)
