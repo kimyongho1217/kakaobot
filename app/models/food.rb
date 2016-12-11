@@ -1,9 +1,9 @@
 class Food < ActiveRecord::Base
+  include WitClient
+
   has_many :food_units
   has_attached_file :image, styles: { medium: "300x300>", thumb: "100x100>" }, default_url: "/images/:style/missing.png"
   validates_attachment_content_type :image, content_type: /\Aimage\/.*\Z/
-
-  @wit = Wit.new(access_token: ENV['WIT_TOKEN'], actions: { send: -> (request, response) {}})
 
   after_save do |instance|
     next unless instance.name_changed? or instance.synonyms_changed?
@@ -43,8 +43,4 @@ class Food < ActiveRecord::Base
     self.synonyms = values.split("\r\n")
   end
 
-	private
-  def wit_client
-    @wit ||= Wit.new(access_token: ENV['WIT_TOKEN'], actions: { send: -> (request, response) {}})
-  end
 end

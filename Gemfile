@@ -65,6 +65,6 @@ gem 'has_secure_token'
 gem 'active_model_serializers', '~> 0.9.0'
 gem 'puma'
 gem 'paperclip'
-#gem 'wit'
+#gem 'wit', :path => "~/work/wit-ruby"
 gem "wit", github: "wit-ai/wit-ruby", branch: "master"
 gem "active_admin_import", github: "activeadmin-plugins/active_admin_import", branch: 'master'

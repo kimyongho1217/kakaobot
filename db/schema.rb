@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161207131527) do
+ActiveRecord::Schema.define(version: 20161211091546) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 20161207131527) do
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
     t.string   "session_id"
+    t.integer  "active_type"
   end
 
   add_index "kakao_users", ["session_id"], name: "index_kakao_users_on_session_id", using: :btree
