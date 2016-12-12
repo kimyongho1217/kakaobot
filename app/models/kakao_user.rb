@@ -54,7 +54,7 @@ class KakaoUser < ActiveRecord::Base
     case
       when sex.blank?
         {
-          message: { text: "성별을 입력해주세요."},
+          message: { text: "하루 권장 열량 계산을 위해서 몇 가지만 여쭤볼게요. 성별이 어떻게 되시나요?"},
           keyboard: {
             type: "buttons",
             buttons: [
@@ -66,31 +66,36 @@ class KakaoUser < ActiveRecord::Base
       when (age.nil? or age <= 0)
         {
           message:
-          { text: "나이를 입력해주세요." }
+          { text: "넵. 초면에 죄송합니다만 나이가 어떻게 되시나요? " }
         }
       when (weight.nil? or weight <= 0)
         {
           message:
-          { text: "체중을 입력해주세요." }
+          { text: "현재 체중을 알려주세요." }
         }
       when (height.nil? or height <= 0)
         {
           message:
-          { text: "신장을 입력해주세요." }
+          { text: " 혹시 키가 어떻게 되시죠?" }
         }
       when active_type.nil?
         {
-          message: { text: "활동성향을 입력해주세요."},
+          message: { text: "평소 운동을 얼마나 하시나요?"},
           keyboard: {
             type: "buttons",
             buttons: [
-              "비활동적",
-              "가벼운활동",
-              "보통활동",
-              "적극적활동",
-              "운동선수"
+              "비활동적(운동 거의 안 함)",
+              "가벼운활동(가벼운 운동 - 주1~3회)",
+              "보통활동(보통 - 주3~5회)",
+              "적극적활동(적극적으로 운동함 - 매일)",
+              "운동선수수준"
             ]
           }
+        }
+      else 
+        {
+          message:
+          { text: "알려주셔서 감사합니다. 남은 칼로리를 물어보시면 계산된 칼로리를 확인하실 수 있습니다." }
         }
     end
   end
