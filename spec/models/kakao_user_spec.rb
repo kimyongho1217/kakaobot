@@ -151,7 +151,7 @@ RSpec.describe KakaoUser, type: :model do
     it "returns expected value when sex is nil" do
       kakao_user.sex = nil
       expect(kakao_user.get_response).to include({
-        message: { text: "성별을 입력해주세요."},
+        message: { text: "하루 권장 열량 계산을 위해서 몇 가지만 여쭤볼게요. 성별이 어떻게 되시나요?"},
         keyboard: {
           type: "buttons",
           buttons: [
@@ -165,39 +165,36 @@ RSpec.describe KakaoUser, type: :model do
     it "returns expected value when age is nil" do
       kakao_user.age = nil
       expect(kakao_user.get_response).to include({
-        message:
-        { text: "나이를 입력해주세요." }
+        message: { text: "넵. 초면에 죄송합니다만 나이가 어떻게 되시나요?" }
       })
     end
 
     it "returns expected value when weight is nil" do
       kakao_user.weight = nil
       expect(kakao_user.get_response).to include({
-        message:
-        { text: "체중을 입력해주세요." }
+        message: { text: "현재 체중을 알려주세요." }
       })
     end
 
     it "returns expected value when height is nil" do
       kakao_user.height = nil
       expect(kakao_user.get_response).to include({
-        message:
-        { text: "신장을 입력해주세요." }
+        message: { text: "혹시 키가 어떻게 되시죠?" }
       })
     end
 
     it "returns expected value when active_type is nil" do
       kakao_user.active_type = nil
       expect(kakao_user.get_response).to include({
-        message: { text: "활동성향을 입력해주세요."},
+        message: { text: "평소 운동을 얼마나 하시나요?"},
         keyboard: {
           type: "buttons",
           buttons: [
-            "비활동적",
-            "가벼운활동",
-            "보통활동",
-            "적극적활동",
-            "운동선수"
+            "비활동적(운동 거의 안 함)",
+            "가벼운활동(가벼운 운동 - 주1~3회)",
+            "보통활동(보통 - 주3~5회)",
+            "적극적활동(적극적으로 운동함 - 매일)",
+            "운동선수수준"
           ]
         }
       })

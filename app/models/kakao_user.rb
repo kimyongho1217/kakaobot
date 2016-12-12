@@ -65,18 +65,15 @@ class KakaoUser < ActiveRecord::Base
         }
       when (age.nil? or age <= 0)
         {
-          message:
-          { text: "넵. 초면에 죄송합니다만 나이가 어떻게 되시나요? " }
+          message: { text: "넵. 초면에 죄송합니다만 나이가 어떻게 되시나요?" }
         }
       when (weight.nil? or weight <= 0)
         {
-          message:
-          { text: "현재 체중을 알려주세요." }
+          message: { text: "현재 체중을 알려주세요." }
         }
       when (height.nil? or height <= 0)
         {
-          message:
-          { text: " 혹시 키가 어떻게 되시죠?" }
+          message: { text: "혹시 키가 어떻게 되시죠?" }
         }
       when active_type.nil?
         {
