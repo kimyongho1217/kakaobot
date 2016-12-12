@@ -120,6 +120,8 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     concurrent-ruby (1.0.2)
+    concurrent-ruby-ext (1.0.2)
+      concurrent-ruby (~> 1.0.2)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     debug_inspector (0.0.2)
@@ -326,6 +328,8 @@ DEPENDENCIES
   capistrano-rbenv
   capistrano3-puma
   coffee-rails (~> 4.1.0)
+  concurrent-ruby
+  concurrent-ruby-ext
   devise (~> 3.2)
   dotenv-rails
   factory_girl_rails (~> 4.0)

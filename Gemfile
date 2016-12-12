@@ -68,3 +68,5 @@ gem 'paperclip'
 #gem 'wit', :path => "~/work/wit-ruby"
 gem "wit", github: "wit-ai/wit-ruby", branch: "master"
 gem "active_admin_import", github: "activeadmin-plugins/active_admin_import", branch: 'master'
+gem 'concurrent-ruby-ext'
+gem 'concurrent-ruby', require: 'concurrent'
