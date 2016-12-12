@@ -1,11 +1,13 @@
 class MessageController < ApplicationController
   include WitClient
 
-  set_wit_actions({
-    send: -> (request, response) { send_to_kakao(request, response) },
-    getCalories: -> (request) { get_calories(request) },
-    eatFoods: -> (request) { eat_food(request) }
-  })
+  def wit_actions
+    {
+      send: -> (request, response) { send_to_kakao(request, response) },
+      getCalories: -> (request) { get_calories(request) },
+      eatFoods: -> (request) { eat_food(request) }
+    }
+  end
 
   def create
     ActiveRecord::Base.transaction do
@@ -26,8 +28,6 @@ class MessageController < ApplicationController
       end
     end
   end
-
-  private
 
   def send_to_kakao(request, response)
     render json: { message: { text: response['text'] } }

@@ -5,7 +5,6 @@ RSpec.describe MessageController, type: :controller do
   let(:kakao_user) { create(:kakao_user) }
 
   describe "#create" do
-    #let(:wit_responses) { JSON.parse(File.read("fixtures/wit_responses.json")) }
     context "with wit.ai" do
       it "ask food information when it is missed" do
       end
@@ -23,17 +22,19 @@ RSpec.describe MessageController, type: :controller do
       end
     end
 
-    it "create kakao user if it doesn't exist" do
-      post :create, user_key: :user_key, type: "text", content: "테스트"
-      expect(KakaoUser.where(user_key: :user_key).exists?).to be_truthy
-    end
+    context "kakao users" do
+      it "create kakao user if it doesn't exist" do
+        post :create, user_key: :user_key, type: "text", content: "테스트"
+        expect(KakaoUser.where(user_key: :user_key).exists?).to be_truthy
+      end
 
-    it "activates kakao user if it exists and is not active" do
-      kakao_user.active = false
-      kakao_user.save
-      post :create, user_key: kakao_user.user_key, type: "text", content: "테스트"
-      kakao_user.reload
-      expect(kakao_user.active).to be_truthy
+      it "activates kakao user if it exists and is not active" do
+        kakao_user.active = false
+        kakao_user.save
+        post :create, user_key: kakao_user.user_key, type: "text", content: "테스트"
+        kakao_user.reload
+        expect(kakao_user.active).to be_truthy
+      end
     end
   end
 end
