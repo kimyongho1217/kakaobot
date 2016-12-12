@@ -17,7 +17,7 @@ class MessageController < ApplicationController
           render json: @kakao_user.get_response
         else
           @rsp = wit_client.async.run_actions(@kakao_user.session_id, params[:content], {})
-          render json: { message: { text: @rsp.value } }
+          render json: { message: { text: @rsp.value! } }
         end
         @kakao_user.save if @kakao_user.changed?
       rescue  ApplicationError => e
@@ -46,8 +46,8 @@ class MessageController < ApplicationController
     meal = Meal.create(kakao_user: @kakao_user)
 
     # to keep original data as those are contained in context later
-    numbers = entities['number'].dup
-    food_units = entities['FoodUnit'].dup
+    numbers = entities['number'].dup if entities['number']
+    food_units = entities['FoodUnit'].dup if entities['FoodUnit']
 
     entities['Food'].each do |food_name|
       number = numbers.shift || 1
