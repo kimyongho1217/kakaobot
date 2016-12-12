@@ -36,20 +36,17 @@ class MessageController < ApplicationController
   def eat_food(request)
     entities = serialize_entities(request['entities'])
     context = {}
-    unless entities['Food'] 
+    unless entities['Food']
       context['missingFood'] = true
       return context
     end
 
-    unless entities['FoodUnit'] 
+    unless entities['FoodUnit']
       context['missingUnit'] = true
       return context
     end
 
-    unless entities['number'] 
-      context['missingNumber'] = true
-      return context
-    end
+    entities['number'] = 1 unless entities['number']
 
     food = Food.find_by(name: entities['Food'])
 
@@ -58,10 +55,14 @@ class MessageController < ApplicationController
       return context
     end
 
-    food_unit = FoodUnit.find_or_create_by(name: entities['FoodUnit'], food: food)
+    food_unit = FoodUnit.find_by(name: entities['FoodUnit'], food: food)
     meal = Meal.create(kakao_user: @kakao_user)
     meal.meal_foods << MealFood.new(food: food, food_unit: food_unit, count: entities['number'])
+
     context['caloriesConsumed'] = meal.total_calorie_consumption
+    context['foodConsumed'] = entities['Food']
+    context['numberConsumed'] = entities['number']
+    context['unitConsumed'] = entities['FoodUnit']
 
     return context
   end

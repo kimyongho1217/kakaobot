@@ -11,4 +11,10 @@ FactoryGirl.define do
     association :food_unit, factory: :pizza_unit_1
     count 1 
   end
+
+  factory :meal_food_without_food_unit, class: MealFood do
+    meal
+    association :food, factory: :pizza
+    count 1 
+  end
 end
