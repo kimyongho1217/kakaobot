@@ -41,11 +41,6 @@ class MessageController < ApplicationController
       return context
     end
 
-    unless entities['FoodUnit']
-      context['missingUnit'] = true
-      return context
-    end
-
     entities['number'] = 1 unless entities['number']
 
     food = Food.find_by(name: entities['Food'])
@@ -62,7 +57,7 @@ class MessageController < ApplicationController
     context['caloriesConsumed'] = meal.total_calorie_consumption
     context['foodConsumed'] = entities['Food']
     context['numberConsumed'] = entities['number']
-    context['unitConsumed'] = entities['FoodUnit']
+    context['unitConsumed'] = entities['FoodUnit'] || "개"
 
     return context
   end
