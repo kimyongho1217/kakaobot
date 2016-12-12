@@ -10,6 +10,10 @@ class MealFood < ActiveRecord::Base
 
   private
   def update_calorie_consumption!
-    self.calorie_consumption = count * food_unit.weight_per_unit * food.calorie / food.weight
+    if food_unit.nil?
+      self.calorie_consumption = food.calorie
+    else
+      self.calorie_consumption = count * food_unit.weight_per_unit * food.calorie / food.weight
+    end
   end
 end
