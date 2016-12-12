@@ -16,7 +16,8 @@ class MessageController < ApplicationController
           @kakao_user.set_info params[:content]
           render json: @kakao_user.get_response
         else
-          wit_client.run_actions(@kakao_user.session_id, params[:content], {})
+          @rsp = wit_client.async.run_actions(@kakao_user.session_id, params[:content], {})
+          render json: { message: { text: @rsp.value } }
         end
         @kakao_user.save if @kakao_user.changed?
       rescue  ApplicationError => e
@@ -29,8 +30,8 @@ class MessageController < ApplicationController
     end
   end
 
-  def send_to_kakao(request, response)
-    render json: { message: { text: response['text'] } }
+  def send_to_kakao(_request, response)
+    @rsp.set response['text']
   end
 
   def eat_food(request)
@@ -76,5 +77,4 @@ class MessageController < ApplicationController
     context['caloriesRemaining'] = @kakao_user.calories_remaining
     return context
   end
-
 end

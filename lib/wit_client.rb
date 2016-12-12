@@ -1,5 +1,10 @@
 module WitClient
   extend ActiveSupport::Concern
+
+  class WitWrapper < Wit
+    include Concurrent::Async
+  end
+
   included do
     mattr_accessor :actions
     mattr_accessor :wit
@@ -16,7 +21,7 @@ module WitClient
   end
 
   def wit_client
-    @wit ||= Wit.new(access_token: ENV['WIT_TOKEN'], actions: self.respond_to?(:wit_actions) ? wit_actions : self.actions)
+    @wit ||= WitWrapper.new(access_token: ENV['WIT_TOKEN'], actions: self.respond_to?(:wit_actions) ? wit_actions : self.actions)
 #    @wit.logger.level = Logger::DEBUG
 #    @wit
   end
