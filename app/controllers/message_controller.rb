@@ -36,28 +36,36 @@ class MessageController < ApplicationController
   def eat_food(request)
     entities = serialize_entities(request['entities'])
     context = {}
+
     unless entities['Food']
       context['missingFood'] = true
       return context
     end
 
-    entities['number'] = 1 unless entities['number']
+    meal = Meal.create(kakao_user: @kakao_user)
 
-    food = Food.find_by(name: entities['Food'])
+    # to keep original data as those are contained in context later
+    numbers = entities['number'].dup
+    food_units = entities['FoodUnit'].dup
 
-    unless food
-      context['missingFoodInfo'] = entities['Food']
-      return context
+    entities['Food'].each do |food_name|
+      number = numbers.shift || 1
+      food = Food.find_by(name: food_name)
+      unless food
+        context['missingFoodInfo'] = food_name
+        return context
+      end
+      food_unit = FoodUnit.find_by(name: food_units.shift, food: food)
+      meal.meal_foods << MealFood.new(food: food, food_unit: food_unit, count: number)
     end
 
-    food_unit = FoodUnit.find_by(name: entities['FoodUnit'], food: food)
-    meal = Meal.create(kakao_user: @kakao_user)
-    meal.meal_foods << MealFood.new(food: food, food_unit: food_unit, count: entities['number'])
-
     context['caloriesConsumed'] = meal.total_calorie_consumption
-    context['foodConsumed'] = entities['Food']
-    context['numberConsumed'] = entities['number']
-    context['unitConsumed'] = entities['FoodUnit'] || "개"
+    context['foodConsumed'] = entities['Food'].join(", ")
+
+    if entities['Food'].count == 1
+      context['numberConsumed'] = entities['number'].first
+      context['unitConsumed'] = entities['FoodUnit'].first || "개"
+    end
 
     return context
   end

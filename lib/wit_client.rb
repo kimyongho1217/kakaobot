@@ -13,20 +13,17 @@ module WitClient
       self.wit ||= Wit.new(access_token: ENV['WIT_TOKEN'], actions: self.actions)
     end
 
-    def serialize_entities(entities)
-      entities.reduce({}) do |m, entity|
-        m.merge!(entity[0] => entity[1][0].has_key?('value') ? entity[1][0]['value'] : entity[1][0])
-      end
-    end
   end
 
   def wit_client
     @wit ||= Wit.new(access_token: ENV['WIT_TOKEN'], actions: self.respond_to?(:wit_actions) ? wit_actions : self.actions)
+#    @wit.logger.level = Logger::DEBUG
+#    @wit
   end
 
   def serialize_entities(entities)
     entities.reduce({}) do |m, entity|
-      m.merge!(entity[0] => entity[1][0].has_key?('value') ? entity[1][0]['value'] : entity[1][0])
+      m.merge!(entity[0] => entity[1].map {|item| item.has_key?('value') ? item['value'] : item })
     end
   end
 end

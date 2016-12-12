@@ -110,7 +110,7 @@ class KakaoUser < ActiveRecord::Base
     unless entities.has_key?("number")
       raise ApplicationError.new(error_message)
     end
-    entities["number"].to_i
+    entities["number"].first.to_i
   end
 
   def calculate_recommended_calories!
