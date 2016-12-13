@@ -66,7 +66,7 @@ gem 'active_model_serializers', '~> 0.9.0'
 gem 'puma'
 gem 'paperclip'
 #gem 'wit', :path => "~/work/wit-ruby"
-gem "wit", github: "wit-ai/wit-ruby", branch: "master"
-gem "active_admin_import", github: "activeadmin-plugins/active_admin_import", branch: 'master'
+gem "wit", git: "https://github.com/wit-ai/wit-ruby.git", branch: "master"
+gem "active_admin_import", git: "https://github.com/activeadmin-plugins/active_admin_import.git", branch: 'master'
 gem 'concurrent-ruby-ext'
 gem 'concurrent-ruby', require: 'concurrent'

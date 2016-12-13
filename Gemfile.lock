@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/activeadmin-plugins/active_admin_import.git
+  remote: https://github.com/activeadmin-plugins/active_admin_import.git
   revision: 0ad07e3f50d63ee01bf5a149cb5d70e67e68872d
   branch: master
   specs:
@@ -10,7 +10,7 @@ GIT
       rubyzip (~> 1.2)
 
 GIT
-  remote: git://github.com/wit-ai/wit-ruby.git
+  remote: https://github.com/wit-ai/wit-ruby.git
   revision: 71e3f9504fc41e1622f10afb9eb3ddf6ca59048c
   branch: master
   specs:
