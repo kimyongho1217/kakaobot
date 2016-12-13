@@ -14,7 +14,7 @@ module Api
       res = @user.update_attributes(user_params)
       unless res
         messages = @user.errors.messages.map do |k, v|
-          "#{k.to_s} #{v[0]}"
+          "#{k} #{v[0]}"
         end
         raise ApplicationError.new(messages.join(","))
       end

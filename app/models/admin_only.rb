@@ -1,5 +1,5 @@
 class AdminOnly < ActiveAdmin::AuthorizationAdapter
-  def authorized?(action, subject = nil)
+  def authorized?(_action, _subject = nil)
     user.admin?
   end
 end

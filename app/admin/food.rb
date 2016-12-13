@@ -15,7 +15,7 @@ ActiveAdmin.register Food do
     column :calorie
     column :created_at
     column :updated_at
-    column  :image do |currency|
+    column :image do |currency|
       image_tag currency.image.url(:thumb)
     end
     actions
@@ -53,7 +53,7 @@ ActiveAdmin.register Food do
       row :sodium
       row :cholesterol
       row :saturated_fat
-      row 'Units' do |n|
+      row 'Units' do
         columns do
           column do
            b "Name"
