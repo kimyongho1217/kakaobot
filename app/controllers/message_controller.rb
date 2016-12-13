@@ -17,15 +17,15 @@ class MessageController < ApplicationController
           res = @kakao_user.get_response
 
         elsif params[:content] == "먹은 음식 적기"
-          res = { message: { text: "안녕하세요. 식사 잘 하셨나요? ^^"\
-                                   "아래와 같이 적어주세요."\
-                                   "\"고구마 1개, 바나나 1개\""\
+          res = { message: { text: "안녕하세요. 식사 잘 하셨나요? ^^\n"\
+                                   "아래와 같이 적어주세요.\n"\
+                                   "\"고구마 1개, 바나나 1개\"\n"\
                                    "\"아메리카노\"" } }
         elsif params[:content] == "도움말"
-          res = { message: { text:  "아래와 같이 적어보세요"\
-                                    "\"아메리카노\""\
-                                    "\"고구마 1개, 바나나 1개\""\
-                                    "\"오늘 얼마나 먹었지?\""\
+          res = { message: { text:  "아래와 같이 적어보세요\n"\
+                                    "\"아메리카노\"\n"\
+                                    "\"고구마 1개, 바나나 1개\"\n"\
+                                    "\"오늘 얼마나 먹었지?\"\n"\
                                     "\"남은 칼로리\"" } }
         else
           @rsp = wit_client.async.run_actions(@kakao_user.session_id, params[:content], {})

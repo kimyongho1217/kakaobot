@@ -23,16 +23,16 @@ RSpec.describe MessageController, type: :controller do
     end
 
     context "fixed response" do
-      it "returns expected value when user asks 도움말" do
-        post :create, user_key: kakao_user.user_key, type: "text", content: "도움말"
-        json_body = JSON.parse(response.body)
-        expect(json_body["message"]["text"]).to eq("아래와 같이 적어보세요\"아메리카노\"\"고구마 1개, 바나나 1개\"\"오늘 얼마나 먹었지?\"\"남은 칼로리\"")
-      end
-
       it "returns expected value when user asks 먹은 음식 적기" do
         post :create, user_key: kakao_user.user_key, type: "text", content: "먹은 음식 적기"
         json_body = JSON.parse(response.body)
-        expect(json_body["message"]["text"]).to eq("안녕하세요. 식사 잘 하셨나요? ^^아래와 같이 적어주세요.\"고구마 1개, 바나나 1개\"\"아메리카노\"")
+        expect(json_body["message"]["text"]).to eq("안녕하세요. 식사 잘 하셨나요? ^^\n아래와 같이 적어주세요.\n\"고구마 1개, 바나나 1개\"\n\"아메리카노\"")
+      end
+
+      it "returns expected value when user asks 도움말" do
+        post :create, user_key: kakao_user.user_key, type: "text", content: "도움말"
+        json_body = JSON.parse(response.body)
+        expect(json_body["message"]["text"]).to eq("아래와 같이 적어보세요\n\"아메리카노\"\n\"고구마 1개, 바나나 1개\"\n\"오늘 얼마나 먹었지?\"\n\"남은 칼로리\"")
       end
     end
 
