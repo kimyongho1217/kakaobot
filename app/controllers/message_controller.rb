@@ -60,13 +60,12 @@ class MessageController < ApplicationController
       meal.meal_foods << MealFood.new(food: food, food_unit: food_unit, count: number)
     end
 
+    context['foodConsumed'] = meal.meal_foods.includes(:food).map {|meal_food|
+      "#{meal_food.food.name} #{meal_food.calorie_consumption}"
+    }.join(", ")
     context['caloriesConsumed'] = meal.total_calorie_consumption
-    context['foodConsumed'] = entities['Food'].join(", ")
+    context['caloriesRemaining'] = @kakao_user.calories_remaining
 
-    if entities['Food'].count == 1
-      context['numberConsumed'] = entities['number'].first
-      context['unitConsumed'] = entities['FoodUnit'].first || "개"
-    end
 
     return context
   end
