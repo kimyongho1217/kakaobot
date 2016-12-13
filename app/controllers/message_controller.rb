@@ -60,8 +60,8 @@ class MessageController < ApplicationController
     meal = Meal.create(kakao_user: @kakao_user)
 
     # to keep original data as those are contained in context later
-    numbers = entities['number'].dup if entities['number']
-    food_units = entities['FoodUnit'].dup if entities['FoodUnit']
+    numbers = entities['number'].dup rescue []
+    food_units = entities['FoodUnit'].dup rescue []
 
     entities['Food'].each do |food_name|
       number = numbers.shift || 1
