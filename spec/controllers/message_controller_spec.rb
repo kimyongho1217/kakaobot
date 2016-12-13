@@ -26,7 +26,7 @@ RSpec.describe MessageController, type: :controller do
       it "returns expected value when user asks 먹은 음식 적기" do
         post :create, user_key: kakao_user.user_key, type: "text", content: "먹은 음식 적기"
         json_body = JSON.parse(response.body)
-        expect(json_body["message"]["text"]).to eq("안녕하세요. 식사 잘 하셨나요? ^^\n아래와 같이 적어주세요.\n\"고구마 1개, 바나나 1개\"\n\"아메리카노\"")
+        expect(json_body["message"]["text"]).to eq("안녕하세요. 식사 잘 하셨나요? ^^\n아래 예시와 같이 적어주시면 칼로리가 기록됩니다.\n\"고구마 1개, 바나나 1개\"\n\"아메리카노\"")
       end
 
       it "returns expected value when user asks 도움말" do

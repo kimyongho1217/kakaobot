@@ -18,7 +18,7 @@ class MessageController < ApplicationController
 
         elsif params[:content] == "먹은 음식 적기"
           res = { message: { text: "안녕하세요. 식사 잘 하셨나요? ^^\n"\
-                                   "아래와 같이 적어주세요.\n"\
+                                   "아래 예시와 같이 적어주시면 칼로리가 기록됩니다.\n"\
                                    "\"고구마 1개, 바나나 1개\"\n"\
                                    "\"아메리카노\"" } }
         elsif params[:content] == "도움말"
