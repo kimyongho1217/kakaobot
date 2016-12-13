@@ -12,7 +12,11 @@ class MessageController < ApplicationController
   def create
     ActiveRecord::Base.transaction do
       begin
-        if params[:content] == "먹은 음식 적기"
+        if @kakao_user.missing_info?
+          @kakao_user.set_info params[:content]
+          res = @kakao_user.get_response
+
+        elsif params[:content] == "먹은 음식 적기"
           res = { message: { text: "안녕하세요. 식사 잘 하셨나요? ^^"\
                                    "아래와 같이 적어주세요."\
                                    "\"고구마 1개, 바나나 1개\""\
@@ -23,13 +27,11 @@ class MessageController < ApplicationController
                                     "\"고구마 1개, 바나나 1개\""\
                                     "\"오늘 얼마나 먹었지?\""\
                                     "\"남은 칼로리\"" } }
-        elsif @kakao_user.missing_info?
-          @kakao_user.set_info params[:content]
-          res = @kakao_user.get_response
         else
           @rsp = wit_client.async.run_actions(@kakao_user.session_id, params[:content], {})
           res = { message: { text: @rsp.value! } }
         end
+
         render json: res
         @kakao_user.save if @kakao_user.changed?
       rescue  ApplicationError => e
