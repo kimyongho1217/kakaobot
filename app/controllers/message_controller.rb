@@ -118,7 +118,11 @@ class MessageController < ApplicationController
     end
 
     context['caloriesConsumed'] = meal.total_calorie_consumption
-    context['caloriesRemaining'] = @kakao_user.calories_remaining
+    if @kakao_user.calories_remaining > 0
+      context['caloriesRemaining'] = @kakao_user.calories_remaining
+    else
+      context['caloriesOver'] = @kakao_user.calories_remaining * -1
+    end
     @kakao_user.context = {} unless @kakao_user.context.blank?
     return context
   end
@@ -126,7 +130,11 @@ class MessageController < ApplicationController
   def get_calories(_)
     context = {}
     context['caloriesConsumed'] = @kakao_user.calories_consumed
-    context['caloriesRemaining'] = @kakao_user.calories_remaining
+    if @kakao_user.calories_remaining > 0
+      context['caloriesRemaining'] = @kakao_user.calories_remaining
+    else
+      context['caloriesOver'] = @kakao_user.calories_remaining * -1
+    end
     return context
   end
 end
