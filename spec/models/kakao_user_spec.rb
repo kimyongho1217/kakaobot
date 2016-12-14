@@ -203,11 +203,11 @@ RSpec.describe KakaoUser, type: :model do
     it "returns expected value when just filled informations required" do
       return_json = {
         message:
-          { text: "알려주셔서 감사합니다. 고객님의 하루 권장 열량은 #{kakao_user.recommended_calories}kcal 입니다.\
-                  이제 먹은 음식을 아래와 같이 적어주시면 제가 칼로리를 알려드려요.\
-                  \"고구마 1개, 바나나 1개\" \
-                  \"고구마 한 개랑 바나나 한 개 먹었어\" \
-                  이외에도 제 도움이 필요하면 언제든지 \"도움말\"이라고 적어주세요." }
+          { text: "알려주셔서 감사합니다. 고객님의 하루 권장 열량은 #{kakao_user.recommended_calories}kcal 입니다.\n"\
+            "이제 먹은 음식을 아래와 같이 적어주시면 제가 칼로리를 알려드려요.\n"\
+            "\"고구마 1개, 바나나 1개\"\n"\
+            "\"고구마 한 개랑 바나나 한 개 먹었어\"\n"\
+            "이외에도 제 도움이 필요하면 언제든지 \"도움말\"이라고 적어주세요." }
       }
       expect(kakao_user.get_response).to include(return_json)
     end
