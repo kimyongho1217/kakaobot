@@ -20,7 +20,7 @@ RSpec.describe MessageController, type: :controller do
       it "returns expected output when response from wit have 1 food information" do
         ramen
         expect(controller.eat_food(single_food_response)).to include({
-          "foodConsumed" => "라면 266",
+          "foodConsumed" => "라면 1개",
           "caloriesConsumed" => 266,
           "caloriesRemaining" => 2463
         })
@@ -32,7 +32,8 @@ RSpec.describe MessageController, type: :controller do
         expect(controller.eat_food(two_foods_response)).to include({
           "foodConsumed" => "라면 266, 바나나 150",
           "caloriesConsumed" => 416,
-          "caloriesRemaining" => 2313
+          "caloriesRemaining" => 2313,
+          "multiFood" => true
         })
       end
 
@@ -40,7 +41,7 @@ RSpec.describe MessageController, type: :controller do
         ramen
         expect(controller.eat_food(two_foods_response)).to include({
           "missingFoodInfo" => "바나나",
-          "foodConsumed" => "라면 266",
+          "foodConsumed" => "라면 1개",
           "caloriesConsumed" => 266,
           "caloriesRemaining" => 2463
         })

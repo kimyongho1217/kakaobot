@@ -78,9 +78,16 @@ class MessageController < ApplicationController
     context['missingFoodInfo'] = missingFoodInfo.join(", ") unless missingFoodInfo.empty?
     return context if missingFoodInfo.count == entities['Food'].count
 
-    context['foodConsumed'] = meal.meal_foods.includes(:food).map {|meal_food|
-      "#{meal_food.food.name} #{meal_food.calorie_consumption}"
-    }.join(", ")
+    if meal.meal_foods.count > 1
+      context['foodConsumed'] = meal.meal_foods.includes(:food).map {|meal_food|
+        "#{meal_food.food.name} #{meal_food.calorie_consumption}"
+      }.join(", ")
+      context['multiFood'] = true if meal.meal_foods.count > 1
+    else
+      meal_food = meal.meal_foods[0]
+      context['foodConsumed'] = "#{meal_food.food.name} #{meal_food.count}#{meal_food.food_unit.name rescue "개"}"
+    end
+
     context['caloriesConsumed'] = meal.total_calorie_consumption
     context['caloriesRemaining'] = @kakao_user.calories_remaining
 
