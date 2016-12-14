@@ -28,7 +28,7 @@ class MessageController < ApplicationController
                                     "\"오늘 얼마나 먹었지?\"\n"\
                                     "\"남은 칼로리\"" } }
         else
-          @rsp = wit_client.async.run_actions(@kakao_user.session_id, params[:content], {})
+          @rsp = wit_client.async.run_actions(@kakao_user.session_id, params[:content], @kakao_user.context || {})
           res = { message: { text: @rsp.value! } }
         end
 
@@ -50,10 +50,30 @@ class MessageController < ApplicationController
 
   def eat_food(request)
     entities = serialize_entities(request['entities'])
+
+    context = request['context'] || {}
+
+    if context.has_key?("ambiguousUnit")
+      previous_entities = context['previous_entities']
+      i = previous_entities['FoodUnit'].index(context['ambiguousUnit'])
+
+      # replacing exsting ambiguous unit with new one
+      previous_entities['FoodUnit'][i] = entities['FoodUnit'][0]
+
+      if entities['number'].is_a?(Array)
+        if previous_entities.has_key?("number")
+          previous_entities['number'].insert(i, entities['number'][0])
+        else
+          previous_entities['number'] = entities['number']
+        end
+      end
+    end
+    entities.merge!(previous_entities || {})
     context = {}
 
     unless entities['Food']
       context['missingFood'] = true
+      @kakao_user.context = context.merge(previous_entities: entities)
       return context
     end
 
@@ -62,6 +82,13 @@ class MessageController < ApplicationController
     # to keep original data as those are contained in context later
     numbers = entities['number'].dup rescue []
     food_units = entities['FoodUnit'].dup rescue []
+
+    food_units.each do |food_unit|
+      next unless %w[약간 조금 많이].include? food_unit
+      context['ambiguousUnit'] = food_unit
+      @kakao_user.context = context.merge(previous_entities: entities)
+      return context
+    end
 
     missingFoodInfo = []
     entities['Food'].each do |food_name|
@@ -85,13 +112,13 @@ class MessageController < ApplicationController
       context['multiFood'] = true if meal.meal_foods.count > 1
     else
       meal_food = meal.meal_foods[0]
-      context['foodConsumed'] = "#{meal_food.food.name} #{meal_food.count}#{meal_food.food_unit.name rescue "개"}"
+      count = meal_food.count < 1 ? meal_food.count : meal_food.count.round
+      context['foodConsumed'] = "#{meal_food.food.name} #{count}#{meal_food.food_unit.name rescue "개"}"
     end
 
     context['caloriesConsumed'] = meal.total_calorie_consumption
     context['caloriesRemaining'] = @kakao_user.calories_remaining
-
-
+    @kakao_user.context = {} unless @kakao_user.context.blank?
     return context
   end
 

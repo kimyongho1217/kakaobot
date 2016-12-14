@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161212064723) do
+ActiveRecord::Schema.define(version: 20161214143042) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 20161212064723) do
     t.datetime "updated_at",                          null: false
     t.string   "session_id"
     t.integer  "active_type"
+    t.json     "context"
   end
 
   add_index "kakao_users", ["session_id"], name: "index_kakao_users_on_session_id", using: :btree
@@ -88,7 +89,7 @@ ActiveRecord::Schema.define(version: 20161212064723) do
     t.integer  "meal_id",                         null: false
     t.integer  "food_id",                         null: false
     t.integer  "food_unit_id"
-    t.integer  "count"
+    t.decimal  "count"
     t.integer  "calorie_consumption", default: 0
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false

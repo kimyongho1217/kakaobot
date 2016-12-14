@@ -21,9 +21,7 @@ module WitClient
   end
 
   def wit_client
-    @wit ||= WitWrapper.new(access_token: ENV['WIT_TOKEN'], actions: self.respond_to?(:wit_actions) ? wit_actions : self.actions)
-#    @wit.logger.level = Logger::DEBUG
-#    @wit
+    @wit ||= WitWrapper.new(access_token: ENV['WIT_TOKEN'], actions: self.respond_to?(:wit_actions) ? wit_actions : self.actions, logger: Rails.logger)
   end
 
   def serialize_entities(entities)

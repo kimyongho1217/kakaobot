@@ -5,9 +5,13 @@ RSpec.describe MessageController, type: :controller do
   let(:kakao_user) { create(:kakao_user) }
   let(:ramen) { create(:ramen) }
   let(:banana) { create(:banana) }
+
+  #json fixtures
   let(:single_food_response) { JSON.parse(File.read("spec/fixtures/single_food.json")) }
+  let(:ambiguous_unit_response) { JSON.parse(File.read("spec/fixtures/ambiguous_unit.json")) }
   let(:two_foods_response) { JSON.parse(File.read("spec/fixtures/two_foods.json")) }
   let(:get_calories_response) { JSON.parse(File.read("spec/fixtures/get_calories.json")) }
+  let(:unit_without_food_response) { JSON.parse(File.read("spec/fixtures/unit_without_food.json")) }
 
 
   describe "#create" do
@@ -50,6 +54,23 @@ RSpec.describe MessageController, type: :controller do
       it "returns expected output when response from wit have 2 food information but both don't have calorie information" do
         expect(controller.eat_food(two_foods_response)).to include({
           "missingFoodInfo" => "라면, 바나나"
+        })
+      end
+
+      it "returns expected output when response from wit have ambiguous unit" do
+        expect(controller.eat_food(ambiguous_unit_response)).to include({
+          "ambiguousUnit" => "약간"
+        })
+      end
+
+      it "returns expected output when we get unit info after ambiguous unit" do
+        ramen
+        controller.eat_food(ambiguous_unit_response)
+        unit_without_food_response['context'] = controller.instance_variable_get(:@kakao_user).context
+        expect(controller.eat_food(unit_without_food_response)).to eq({
+          "foodConsumed"=>"라면 1개",
+          "caloriesConsumed"=>266,
+          "caloriesRemaining"=>2463
         })
       end
     end
