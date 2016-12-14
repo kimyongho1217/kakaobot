@@ -27,6 +27,7 @@ module WitClient
   end
 
   def serialize_entities(entities)
+    return {} unless entities
     entities.reduce({}) do |m, entity|
       m.merge!(entity[0] => entity[1].map {|item| item.has_key?('value') ? item['value'] : item })
     end

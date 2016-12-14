@@ -3,22 +3,66 @@ require 'rails_helper'
 RSpec.describe MessageController, type: :controller do
   let(:user_key) { Faker::Crypto.md5 }
   let(:kakao_user) { create(:kakao_user) }
+  let(:ramen) { create(:ramen) }
+  let(:banana) { create(:banana) }
+  let(:single_food_response) { JSON.parse(File.read("spec/fixtures/single_food.json")) }
+  let(:two_foods_response) { JSON.parse(File.read("spec/fixtures/two_foods.json")) }
+  let(:get_calories_response) { JSON.parse(File.read("spec/fixtures/get_calories.json")) }
+
 
   describe "#create" do
-    context "with wit.ai" do
-      it "ask food information when it is missed" do
+
+    context "eatFood" do
+      before :each do
+        controller.instance_variable_set(:@kakao_user, kakao_user)
       end
 
-      it "ask unit information when it is missed" do
+      it "returns expected output when response from wit have 1 food information" do
+        ramen
+        expect(controller.eat_food(single_food_response)).to include({
+          "foodConsumed" => "라면 266",
+          "caloriesConsumed" => 266,
+          "caloriesRemaining" => 2463
+        })
       end
 
-      it "says calories consumed when all information is accessiable" do
+      it "returns expected output when response from wit have 2 food information" do
+        ramen
+        banana
+        expect(controller.eat_food(two_foods_response)).to include({
+          "foodConsumed" => "라면 266, 바나나 150",
+          "caloriesConsumed" => 416,
+          "caloriesRemaining" => 2313
+        })
       end
 
-      it "create meal when user says eat something" do
+      it "returns expected output when response from wit have 2 food information but 1 doesn't have calorie information" do
+        ramen
+        expect(controller.eat_food(two_foods_response)).to include({
+          "missingFoodInfo" => "바나나",
+          "foodConsumed" => "라면 266",
+          "caloriesConsumed" => 266,
+          "caloriesRemaining" => 2463
+        })
       end
 
-      it "create meal_food when user says eat something" do
+      it "returns expected output when response from wit have 2 food information but both don't have calorie information" do
+        expect(controller.eat_food(two_foods_response)).to include({
+          "missingFoodInfo" => "라면, 바나나"
+        })
+      end
+    end
+
+    context "getCalories" do
+      before :each do
+        controller.instance_variable_set(:@kakao_user, kakao_user)
+      end
+
+      it "returns expected output" do
+        expect(controller.get_calories(get_calories_response)).to include({
+          "caloriesConsumed" => 0,
+          "caloriesRemaining" => 2729
+        })
       end
     end
 

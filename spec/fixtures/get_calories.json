@@ -1,0 +1,13 @@
+{
+  "confidence":0.0014066528295486032,
+  "type":"action",
+  "action":"getCalories",
+  "entities":{
+    "intent":[
+      {
+        "confidence":0.9870447078205493,
+        "value":"남은칼로리"
+      }
+    ]
+  }
+}

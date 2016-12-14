@@ -63,16 +63,20 @@ class MessageController < ApplicationController
     numbers = entities['number'].dup rescue []
     food_units = entities['FoodUnit'].dup rescue []
 
+    missingFoodInfo = []
     entities['Food'].each do |food_name|
       number = numbers.shift || 1
       food = Food.find_by(name: food_name)
       unless food
-        context['missingFoodInfo'] = food_name
-        return context
+        missingFoodInfo << food_name
+        next
       end
       food_unit = FoodUnit.find_by(name: food_units.shift, food: food)
       meal.meal_foods << MealFood.new(food: food, food_unit: food_unit, count: number)
     end
+
+    context['missingFoodInfo'] = missingFoodInfo.join(", ") unless missingFoodInfo.empty?
+    return context if missingFoodInfo.count == entities['Food'].count
 
     context['foodConsumed'] = meal.meal_foods.includes(:food).map {|meal_food|
       "#{meal_food.food.name} #{meal_food.calorie_consumption}"

@@ -1,0 +1,34 @@
+{
+  "confidence":0.0020368821018023563,
+  "type":"action",
+  "action":"eatFoods",
+  "entities":{
+    "Food":[
+      {
+        "confidence":0.8704147570716078,
+        "type":"value",
+        "value":"라면"
+      }
+    ],
+    "number":[
+      {
+        "confidence":1,
+        "type":"value",
+        "value":1
+      }
+    ],
+    "FoodUnit":[
+      {
+        "confidence":0.9961657200439812,
+        "type":"value",
+        "value":"그릇"
+      }
+    ],
+    "intent":[
+      {
+        "confidence":0.9988051835558324,
+        "value":"먹다"
+      }
+    ]
+  }
+}
