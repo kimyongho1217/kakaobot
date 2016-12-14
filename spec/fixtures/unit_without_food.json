@@ -1,11 +1,11 @@
 {
   "context":{},
   "entities":{
-    "Food":[
+    "FoodUnit":[
       {
-        "confidence":0.8704147570716078,
+        "confidence":0.9961657200439812,
         "type":"value",
-        "value":"라면"
+        "value":"그릇"
       }
     ],
     "number":[
@@ -13,13 +13,6 @@
         "confidence":1,
         "type":"value",
         "value":1
-      }
-    ],
-    "FoodUnit":[
-      {
-        "confidence":0.9961657200439812,
-        "type":"value",
-        "value":"그릇"
       }
     ],
     "intent":[
