@@ -1,7 +1,5 @@
 {
-  "confidence":0.0014066528295486032,
-  "type":"action",
-  "action":"getCalories",
+  "context":{},
   "entities":{
     "intent":[
       {
