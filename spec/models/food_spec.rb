@@ -9,7 +9,7 @@ RSpec.describe Food, type: :model do
       expect(food).to be_valid
     end
 
-    context "when name changes" do
+    context "changing name" do
       let(:new_name) { "IMANEWNAME" }
       before :each do
         @old_name = food.name
@@ -28,7 +28,7 @@ RSpec.describe Food, type: :model do
         expect(WebMock).to have_requested(
           :post,
           "https://api.wit.ai/entities/#{food.class.name}/values"
-        ).with(body: {value: new_name, expressions:[]}).once
+        ).with(body: {value: new_name, expressions:[new_name]}).once
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe Food, type: :model do
         expect(WebMock).to have_requested(
           :post,
           "https://api.wit.ai/entities/#{food.class.name}/values"
-        ).with(body: {value: food.name, expressions: [new_synonym]}).once
+        ).with(body: {value: food.name, expressions: [food.name, new_synonym]}).once
       end
     end
 

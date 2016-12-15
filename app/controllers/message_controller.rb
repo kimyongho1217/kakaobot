@@ -3,9 +3,12 @@ class MessageController < ApplicationController
 
   def wit_actions
     {
-      send: -> (request, response) { send_to_kakao(request, response) },
+      send: -> (_request, response) {
+        send_to_kakao({ message: { text: response['text'] } })
+      },
       getCalories: -> (request) { get_calories(request) },
-      eatFoods: -> (request) { eat_food(request) }
+      eatFoods: -> (request) { eat_food(request) },
+      searchFood: -> (request) { search_food(request) }
     }
   end
 
@@ -30,7 +33,7 @@ class MessageController < ApplicationController
                                     "\"남은 칼로리\"" } }
         else
           @rsp = wit_client.async.run_actions(@kakao_user.session_id, params[:content], @kakao_user.context || {})
-          res = { message: { text: @rsp.value! } }
+          res = @rsp.value!
         end
 
         render json: res
@@ -45,32 +48,35 @@ class MessageController < ApplicationController
     end
   end
 
-  def send_to_kakao(_request, response)
-    @rsp.set response['text']
+  def send_to_kakao(response)
+    @rsp.set response
+  end
+
+  def merge_context(current, context)
+    return current if !context.has_key?("ambiguousUnit") or context['previous_entities'].nil?
+
+    previous = context['previous_entities']
+
+    i = previous['FoodUnit'].index(context['ambiguousUnit'])
+
+    # replacing exsting ambiguous unit with new one
+    previous['FoodUnit'][i] = current['FoodUnit'][0]
+
+    if previous.has_key?("number")
+      previous['number'].insert(i, (current['number'][0] rescue 1))
+    else
+      previous['number'] = current['number'] || []
+    end
+    current.merge(previous)
   end
 
   def eat_food(request)
-    entities = serialize_entities(request['entities'])
-
-    context = request['context']
-    previous_entities = context['previous_entities'] || {}
-
-    if context.has_key?("ambiguousUnit")
-      i = previous_entities['FoodUnit'].index(context['ambiguousUnit'])
-
-      # replacing exsting ambiguous unit with new one
-      previous_entities['FoodUnit'][i] = entities['FoodUnit'][0]
-
-      if previous_entities.has_key?("number")
-        previous_entities['number'].insert(i, (entities['number'][0] rescue 1))
-      else
-        previous_entities['number'] = entities['number'] || []
-      end
-    end
-
-    entities.merge!(previous_entities)
-
+    entities = merge_context(serialize_entities(request['entities']), request['context'])
     context = {}
+
+#    Rails.logger.debug "========================================="
+#    Rails.logger.debug entities
+#    Rails.logger.debug "========================================="
 
     unless entities['Food']
       context['missingFood'] = true
@@ -78,7 +84,12 @@ class MessageController < ApplicationController
       return context
     end
 
-    meal = Meal.create(kakao_user: @kakao_user)
+    if entities['FoodUnit'].nil? and entities['number'].nil? and entities['Food'].count == 1 and Food.name_like(entities['Food'][0]).count > 1
+      @kakao_user.context = {}
+      context['searchFood'] = entities['Food'][0]
+      return context
+    end
+
 
     # to keep original data as those are contained in context later
     numbers = entities['number'].dup rescue []
@@ -90,6 +101,8 @@ class MessageController < ApplicationController
       @kakao_user.context = context.merge(previous_entities: entities)
       return context
     end
+
+    meal = Meal.create(kakao_user: @kakao_user)
 
     missingFoodInfo = []
     entities['Food'].each do |food_name|
@@ -136,5 +149,25 @@ class MessageController < ApplicationController
       context['caloriesOver'] = @kakao_user.calories_remaining * -1
     end
     return context
+  end
+
+  def search_food(request)
+		search_query = serialize_entities(request['entities'])['Food'][0] rescue nil
+    search_query ||= request['context']['searchFood']
+    foods = Food.name_like(search_query)
+
+    if foods.empty?
+      msg = { message: { text: "죄송합니다. 검색결과가 없습니다" } }
+    else
+      msg = {
+        message: { text: "어떤 #{search_query} 인가요?"},
+        keyboard: {
+          type: "buttons",
+          buttons: foods.map(&:name)
+        }
+      }
+    end
+    send_to_kakao msg
+    return { }
   end
 end

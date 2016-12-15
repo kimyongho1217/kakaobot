@@ -5,6 +5,12 @@ class Food < ActiveRecord::Base
   has_attached_file :image, styles: { medium: "300x300>", thumb: "100x100>" }, default_url: "/images/:style/missing.png"
   validates_attachment_content_type :image, content_type: /\Aimage\/.*\Z/
 
+  scope :name_like, -> (query) {
+    where("name like ?", "%#{query}%")
+    .order("similarity(name, #{ActiveRecord::Base.connection.quote(query)}) DESC")
+    .limit(12)
+  }
+
   after_save do |instance|
     next unless instance.name_changed? or instance.synonyms_changed?
     if instance.name_changed?
@@ -30,7 +36,7 @@ class Food < ActiveRecord::Base
     class_name = self.class.name
     wit_client.post_values(class_name, {
       value: name,
-      expressions: synonyms
+      expressions: [name] + synonyms
     })
   end
 
