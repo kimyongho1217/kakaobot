@@ -3,9 +3,12 @@ class MessageController < ApplicationController
 
   def wit_actions
     {
-      send: -> (request, response) { send_to_kakao(request, response) },
+      send: -> (request, response) {
+        send_to_kakao({ message: { text: response['text'] } })
+      },
       getCalories: -> (request) { get_calories(request) },
-      eatFoods: -> (request) { eat_food(request) }
+      eatFoods: -> (request) { eat_food(request) },
+      searchFood: -> (request) { search_food(request) }
     }
   end
 
@@ -30,7 +33,7 @@ class MessageController < ApplicationController
                                     "\"남은 칼로리\"" } }
         else
           @rsp = wit_client.async.run_actions(@kakao_user.session_id, params[:content], @kakao_user.context || {})
-          res = { message: { text: @rsp.value! } }
+          res = @rsp.value!
         end
 
         render json: res
@@ -45,8 +48,8 @@ class MessageController < ApplicationController
     end
   end
 
-  def send_to_kakao(_request, response)
-    @rsp.set response['text']
+  def send_to_kakao(response)
+    @rsp.set response
   end
 
   def eat_food(request)
@@ -69,7 +72,9 @@ class MessageController < ApplicationController
     end
 
     entities.merge!(previous_entities)
-
+#    Rails.logger.debug "========================================="
+#    Rails.logger.debug entities
+#    Rails.logger.debug "========================================="
     context = {}
 
     unless entities['Food']
@@ -77,8 +82,12 @@ class MessageController < ApplicationController
       @kakao_user.context = context.merge(previous_entities: entities)
       return context
     end
+    if entities['FoodUnit'].nil? and entities['number'].nil? and entities['Food'].count == 1 and Food.name_like(entities['Food'][0]).count > 1
+      @kakao_user.context = {}
+      context['searchFood'] = entities['Food'][0]
+      return context
+    end
 
-    meal = Meal.create(kakao_user: @kakao_user)
 
     # to keep original data as those are contained in context later
     numbers = entities['number'].dup rescue []
@@ -90,6 +99,8 @@ class MessageController < ApplicationController
       @kakao_user.context = context.merge(previous_entities: entities)
       return context
     end
+
+    meal = Meal.create(kakao_user: @kakao_user)
 
     missingFoodInfo = []
     entities['Food'].each do |food_name|
@@ -136,5 +147,25 @@ class MessageController < ApplicationController
       context['caloriesOver'] = @kakao_user.calories_remaining * -1
     end
     return context
+  end
+
+  def search_food(request)
+		search_query = serialize_entities(request['entities'])['Food'][0] rescue nil
+    search_query ||= request['context']['searchFood']
+    foods = Food.name_like(search_query)
+
+    if foods.empty?
+      msg = { message: { text: "죄송합니다. 검색결과가 없습니다" } }
+    else
+      msg = {
+        message: { text: "어떤 #{search_query} 인가요?"},
+        keyboard: {
+          type: "buttons",
+          buttons: foods.map(&:name)
+        }
+      }
+    end
+    send_to_kakao msg
+    return { }
   end
 end
