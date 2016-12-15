@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214143042) do
+ActiveRecord::Schema.define(version: 20161215095824) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pg_trgm"
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace"
@@ -65,6 +66,7 @@ ActiveRecord::Schema.define(version: 20161214143042) do
   end
 
   add_index "foods", ["name"], name: "index_foods_on_name", unique: true, using: :btree
+  add_index "foods", ["name"], name: "trgm_index_foods_on_name", using: :gin
   add_index "foods", ["synonyms"], name: "index_foods_on_synonyms", using: :gin
 
   create_table "kakao_users", force: :cascade do |t|
