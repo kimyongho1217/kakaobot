@@ -3,7 +3,7 @@ class MessageController < ApplicationController
 
   def wit_actions
     {
-      send: -> (request, response) {
+      send: -> (_request, response) {
         send_to_kakao({ message: { text: response['text'] } })
       },
       getCalories: -> (request) { get_calories(request) },
@@ -52,36 +52,38 @@ class MessageController < ApplicationController
     @rsp.set response
   end
 
-  def eat_food(request)
-    entities = serialize_entities(request['entities'])
+  def merge_context(current, context)
+    return current if !context.has_key?("ambiguousUnit") or context['previous_entities'].nil?
 
-    context = request['context']
-    previous_entities = context['previous_entities'] || {}
+    previous = context['previous_entities']
 
-    if context.has_key?("ambiguousUnit")
-      i = previous_entities['FoodUnit'].index(context['ambiguousUnit'])
+    i = previous['FoodUnit'].index(context['ambiguousUnit'])
 
-      # replacing exsting ambiguous unit with new one
-      previous_entities['FoodUnit'][i] = entities['FoodUnit'][0]
+    # replacing exsting ambiguous unit with new one
+    previous['FoodUnit'][i] = current['FoodUnit'][0]
 
-      if previous_entities.has_key?("number")
-        previous_entities['number'].insert(i, (entities['number'][0] rescue 1))
-      else
-        previous_entities['number'] = entities['number'] || []
-      end
+    if previous.has_key?("number")
+      previous['number'].insert(i, (current['number'][0] rescue 1))
+    else
+      previous['number'] = current['number'] || []
     end
+    current.merge(previous)
+  end
 
-    entities.merge!(previous_entities)
+  def eat_food(request)
+    entities = merge_context(serialize_entities(request['entities']), request['context'])
+    context = {}
+
 #    Rails.logger.debug "========================================="
 #    Rails.logger.debug entities
 #    Rails.logger.debug "========================================="
-    context = {}
 
     unless entities['Food']
       context['missingFood'] = true
       @kakao_user.context = context.merge(previous_entities: entities)
       return context
     end
+
     if entities['FoodUnit'].nil? and entities['number'].nil? and entities['Food'].count == 1 and Food.name_like(entities['Food'][0]).count > 1
       @kakao_user.context = {}
       context['searchFood'] = entities['Food'][0]

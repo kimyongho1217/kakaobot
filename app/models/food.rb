@@ -36,7 +36,7 @@ class Food < ActiveRecord::Base
     class_name = self.class.name
     wit_client.post_values(class_name, {
       value: name,
-      expressions: synonyms + [name]
+      expressions: [name] + synonyms
     })
   end
 
