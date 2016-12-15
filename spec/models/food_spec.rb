@@ -2,6 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Food, type: :model do
   let(:food) { create(:food) }
+  let(:pizza) { build(:pizza) }
+
+  it "should remove trailing spaces" do
+    pizza.name = "pizza        "
+    pizza.save
+    expect(pizza.name).to eq("pizza")
+  end
 
   context "with wit client" do
 

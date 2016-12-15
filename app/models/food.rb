@@ -11,6 +11,10 @@ class Food < ActiveRecord::Base
     .limit(12)
   }
 
+  before_create do |food|
+    food.name.strip!
+  end
+
   after_save do |instance|
     next unless instance.name_changed? or instance.synonyms_changed?
     if instance.name_changed?
