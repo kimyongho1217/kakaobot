@@ -1,0 +1,23 @@
+{
+  "context":{},
+  "entities":{
+    "Food":[
+      {
+        "confidence":0.8906335196289135,
+        "type":"value",
+        "value":"해물"
+      },
+      {
+        "confidence":0.9264985922522216,
+        "type":"value",
+        "value":"라면"
+      }
+    ],
+    "intent":[
+      {
+        "confidence":0.999173704966562,
+        "value":"먹다"
+      }
+    ]
+  }
+}

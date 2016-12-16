@@ -4,6 +4,7 @@ RSpec.describe MessageController, type: :controller do
   let(:user_key) { Faker::Crypto.md5 }
   let(:kakao_user) { create(:kakao_user) }
   let(:ramen) { create(:ramen) }
+  let(:seafood) { create(:seafood) }
   let(:seafood_ramen) { create(:seafood_ramen) }
   let(:banana) { create(:banana) }
 
@@ -15,6 +16,7 @@ RSpec.describe MessageController, type: :controller do
   let(:unit_without_food_response) { JSON.parse(File.read("spec/fixtures/unit_without_food.json")) }
   let(:food_only_response) { JSON.parse(File.read("spec/fixtures/food_only.json")) }
   let(:food_again_response) { JSON.parse(File.read("spec/fixtures/food_again.json")) }
+  let(:two_foods_only_response) { JSON.parse(File.read("spec/fixtures/two_foods_only.json")) }
 
 
   describe "#create" do
@@ -99,12 +101,20 @@ RSpec.describe MessageController, type: :controller do
         banana and ramen and seafood_ramen
         controller.eat_food(two_foods_response)
         food_again_response['context'] = controller.instance_variable_get(:@kakao_user).context
-        binding.pry
         expect(controller.eat_food(food_again_response)).to include({
           "foodConsumed" => "라면 532, 바나나 150",
           "multiFood" => true,
           "caloriesConsumed" => 682,
           "caloriesRemaining" => 2047
+        })
+      end
+
+      it "merge into one food if merged word is foodname" do
+        seafood and ramen and seafood_ramen
+        expect(controller.eat_food(two_foods_only_response)).to include({
+          "foodConsumed" => "해물라면 1개",
+          "caloriesConsumed" => 266,
+          "caloriesRemaining" => 2463
         })
       end
     end

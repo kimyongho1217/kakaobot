@@ -89,6 +89,13 @@ class MessageController < ApplicationController
       return context
     end
 
+    if entities['number'].nil? \
+      and entities['FoodUnit'].nil? \
+      and entities['Food'].count > 1 \
+      and Food.where(name: entities['Food'].join).exists?
+      entities['Food'] = [entities['Food'].join]
+    end
+
     #puts "========================================"
     #puts entities
     #puts "========================================"
