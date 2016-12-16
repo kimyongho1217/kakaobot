@@ -20,6 +20,13 @@ FactoryGirl.define do
     description "라면"
   end
 
+  factory :seafood_ramen, class: Food do
+    name "해물라면"
+    weight 100
+    calorie 266
+    description "해물라면"
+  end
+
   factory :banana, class: Food do
     name "바나나"
     weight 100

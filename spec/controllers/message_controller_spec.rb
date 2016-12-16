@@ -4,6 +4,7 @@ RSpec.describe MessageController, type: :controller do
   let(:user_key) { Faker::Crypto.md5 }
   let(:kakao_user) { create(:kakao_user) }
   let(:ramen) { create(:ramen) }
+  let(:seafood_ramen) { create(:seafood_ramen) }
   let(:banana) { create(:banana) }
 
   #json fixtures
@@ -12,6 +13,8 @@ RSpec.describe MessageController, type: :controller do
   let(:two_foods_response) { JSON.parse(File.read("spec/fixtures/two_foods.json")) }
   let(:get_calories_response) { JSON.parse(File.read("spec/fixtures/get_calories.json")) }
   let(:unit_without_food_response) { JSON.parse(File.read("spec/fixtures/unit_without_food.json")) }
+  let(:food_only_response) { JSON.parse(File.read("spec/fixtures/food_only.json")) }
+  let(:food_again_response) { JSON.parse(File.read("spec/fixtures/food_again.json")) }
 
 
   describe "#create" do
@@ -31,13 +34,12 @@ RSpec.describe MessageController, type: :controller do
       end
 
       it "returns expected output when response from wit have 2 food information" do
-        ramen
-        banana
+        ramen and banana
         expect(controller.eat_food(two_foods_response)).to include({
-          "foodConsumed" => "라면 266, 바나나 150",
-          "caloriesConsumed" => 416,
-          "caloriesRemaining" => 2313,
-          "multiFood" => true
+          "foodConsumed" => "라면 532, 바나나 150",
+          "multiFood" => true,
+          "caloriesConsumed" => 682,
+          "caloriesRemaining" => 2047
         })
       end
 
@@ -45,9 +47,9 @@ RSpec.describe MessageController, type: :controller do
         ramen
         expect(controller.eat_food(two_foods_response)).to include({
           "missingFoodInfo" => "바나나",
-          "foodConsumed" => "라면 1개",
-          "caloriesConsumed" => 266,
-          "caloriesRemaining" => 2463
+          "foodConsumed" => "라면 2개",
+          "caloriesConsumed" => 532,
+          "caloriesRemaining" => 2197
         })
       end
 
@@ -68,9 +70,41 @@ RSpec.describe MessageController, type: :controller do
         controller.eat_food(ambiguous_unit_response)
         unit_without_food_response['context'] = controller.instance_variable_get(:@kakao_user).context
         expect(controller.eat_food(unit_without_food_response)).to eq({
-          "foodConsumed"=>"라면 1개",
-          "caloriesConsumed"=>266,
-          "caloriesRemaining"=>2463
+          "foodConsumed" => "라면 1개",
+          "caloriesConsumed" => 266,
+          "caloriesRemaining" => 2463
+        })
+      end
+
+      it "returns searchFood when food name is in many different foods" do
+        ramen and seafood_ramen
+        expect(controller.eat_food(two_foods_response)).to include({
+          "searchFood" => "라면"
+        })
+      end
+
+      it "returns expected output when we get food name after search request" do
+        banana and ramen and seafood_ramen
+        controller.eat_food(two_foods_response)
+        food_only_response['context'] = controller.instance_variable_get(:@kakao_user).context
+        expect(controller.eat_food(food_only_response)).to include({
+          "foodConsumed" => "해물라면 532, 바나나 150",
+          "multiFood" => true,
+          "caloriesConsumed" => 682,
+          "caloriesRemaining" => 2047
+        })
+      end
+
+      it "returns expected output when we get food name after search request" do
+        banana and ramen and seafood_ramen
+        controller.eat_food(two_foods_response)
+        food_again_response['context'] = controller.instance_variable_get(:@kakao_user).context
+        binding.pry
+        expect(controller.eat_food(food_again_response)).to include({
+          "foodConsumed" => "라면 532, 바나나 150",
+          "multiFood" => true,
+          "caloriesConsumed" => 682,
+          "caloriesRemaining" => 2047
         })
       end
     end

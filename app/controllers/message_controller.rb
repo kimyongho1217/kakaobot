@@ -53,30 +53,35 @@ class MessageController < ApplicationController
   end
 
   def merge_context(current, context)
-    return current if !context.has_key?("ambiguousUnit") or context['previous_entities'].nil?
+    return current unless context['previous_entities']
 
     previous = context['previous_entities']
+    if context['ambiguousUnit']
+      i = previous['FoodUnit'].index(context['ambiguousUnit'])
 
-    i = previous['FoodUnit'].index(context['ambiguousUnit'])
+      # replacing exsting ambiguous unit with new one
+      previous['FoodUnit'][i] = current['FoodUnit'][0]
 
-    # replacing exsting ambiguous unit with new one
-    previous['FoodUnit'][i] = current['FoodUnit'][0]
+      if previous.has_key?("number")
+        previous['number'].insert(i, (current['number'][0] rescue 1))
+      else
+        previous['number'] = current['number'] || []
+      end
 
-    if previous.has_key?("number")
-      previous['number'].insert(i, (current['number'][0] rescue 1))
-    else
-      previous['number'] = current['number'] || []
+    elsif context['missingFood']
+      previous['Food'] = current['Food']
+
+    elsif context['searchFood']
+      i = previous['Food'].index(context['searchFood'])
+      # replacing exsting ambiguous unit with new one
+      previous['Food'][i] = current['Food'][0]
     end
-    current.merge(previous)
+    current.merge(previous).merge(context.except("previous_entities"))
   end
 
   def eat_food(request)
     entities = merge_context(serialize_entities(request['entities']), request['context'])
     context = {}
-
-#    Rails.logger.debug "========================================="
-#    Rails.logger.debug entities
-#    Rails.logger.debug "========================================="
 
     unless entities['Food']
       context['missingFood'] = true
@@ -84,12 +89,9 @@ class MessageController < ApplicationController
       return context
     end
 
-    if entities['FoodUnit'].nil? and entities['number'].nil? and entities['Food'].count == 1 and Food.name_like(entities['Food'][0]).count > 1
-      @kakao_user.context = {}
-      context['searchFood'] = entities['Food'][0]
-      return context
-    end
-
+    #puts "========================================"
+    #puts entities
+    #puts "========================================"
 
     # to keep original data as those are contained in context later
     numbers = entities['number'].dup rescue []
@@ -107,11 +109,20 @@ class MessageController < ApplicationController
     missingFoodInfo = []
     entities['Food'].each do |food_name|
       number = numbers.shift || 1
-      food = Food.find_by(name: food_name)
-      unless food
+      foods = Food.name_like(food_name)
+
+      if foods.empty?
         missingFoodInfo << food_name
         next
       end
+
+      if foods.count > 1 and entities["searchFood"].nil?
+        context['searchFood'] = food_name
+        @kakao_user.context = context.merge(previous_entities: entities)
+        return context
+      end
+
+      food = foods.find_by(name: food_name)
       food_unit = FoodUnit.find_by(name: food_units.shift, food: food)
       meal.meal_foods << MealFood.new(food: food, food_unit: food_unit, count: number)
     end
@@ -120,9 +131,9 @@ class MessageController < ApplicationController
     return context if missingFoodInfo.count == entities['Food'].count
 
     if meal.meal_foods.count > 1
-      context['foodConsumed'] = meal.meal_foods.includes(:food).map {|meal_food|
+      context['foodConsumed'] = meal.meal_foods.includes(:food).map do |meal_food|
         "#{meal_food.food.name} #{meal_food.calorie_consumption}"
-      }.join(", ")
+      end.join(", ")
       context['multiFood'] = true if meal.meal_foods.count > 1
     else
       meal_food = meal.meal_foods[0]
