@@ -112,6 +112,28 @@ RSpec.describe MessageController, type: :controller do
       it "merge into one food if merged word is foodname" do
         seafood and ramen and seafood_ramen
         expect(controller.eat_food(two_foods_only_response)).to include({
+          "missingNumber" => "해물라면"
+        })
+        unit_without_food_response['context'] = controller.instance_variable_get(:@kakao_user).context
+        expect(controller.eat_food(unit_without_food_response)).to include({
+          "foodConsumed" => "해물라면 1개",
+          "caloriesConsumed" => 266,
+          "caloriesRemaining" => 2463
+        })
+      end
+
+      it "asks quantity if number is missing" do
+        seafood_ramen
+        expect(controller.eat_food(food_only_response)).to include({
+          "missingNumber" => "해물라면"
+        })
+      end
+
+      it "returns expected output after asking quantity which is due to missing quantity" do
+        seafood_ramen
+        controller.eat_food(food_only_response)
+        unit_without_food_response['context'] = controller.instance_variable_get(:@kakao_user).context
+        expect(controller.eat_food(unit_without_food_response)).to include({
           "foodConsumed" => "해물라면 1개",
           "caloriesConsumed" => 266,
           "caloriesRemaining" => 2463
