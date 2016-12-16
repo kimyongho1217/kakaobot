@@ -8,7 +8,8 @@ class MessageController < ApplicationController
       },
       getCalories: -> (request) { get_calories(request) },
       eatFoods: -> (request) { eat_food(request) },
-      searchFood: -> (request) { search_food(request) }
+      searchFood: -> (request) { search_food(request) },
+      askQauntity: -> (request) { ask_quantity(request) }
     }
   end
 
@@ -115,12 +116,19 @@ class MessageController < ApplicationController
 
     missingFoodInfo = []
     entities['Food'].each do |food_name|
-      number = numbers.shift || 1
+      number = numbers.shift
+
       foods = Food.name_like(food_name)
 
       if foods.empty?
         missingFoodInfo << food_name
         next
+      end
+
+      unless number
+        context['missingNumber'] = food_name
+        @kakao_user.context = context.merge(previous_entities: entities)
+        return context
       end
 
       if foods.count > 1 and entities["searchFood"].nil?
@@ -186,6 +194,23 @@ class MessageController < ApplicationController
       }
     end
     send_to_kakao msg
+    return { }
+  end
+
+  def ask_quantity(request)
+    unit = Food.find_by(name: request['context']['missingNumber']).food_units[0].name rescue "개"
+
+    send_to_kakao({
+      message: { text: "#{request['context']['missingNumber']}를 얼마나 드셨나요?"},
+      keyboard: {
+        type: "buttons",
+        buttons: [
+          "0.5#{unit}",
+          "1#{unit}",
+          "2#{unit}"
+        ]
+      }
+    })
     return { }
   end
 end
