@@ -174,6 +174,7 @@ class MessageController < ApplicationController
     else
       context['caloriesOver'] = @kakao_user.calories_remaining * -1
     end
+    @kakao_user.context = {} unless @kakao_user.context.blank?
     return context
   end
 
