@@ -9,7 +9,7 @@ class MessageController < ApplicationController
       getCalories: -> (request) { get_calories(request) },
       eatFoods: -> (request) { eat_food(request) },
       searchFood: -> (request) { search_food(request) },
-      askQauntity: -> (request) { ask_quantity(request) }
+      askQuantity: -> (request) { ask_quantity(request) }
     }
   end
 
