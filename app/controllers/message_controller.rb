@@ -82,20 +82,23 @@ class MessageController < ApplicationController
   end
 
   def eat_food(request)
-    entities = merge_context(serialize_entities(request['entities']), request['context'])
-    context = {}
-
-    unless entities['Food']
-      context['missingFood'] = true
-      @kakao_user.context = context.merge(previous_entities: entities)
-      return context
-    end
+    entities = serialize_entities(request['entities'])
 
     if entities['number'].nil? \
       and entities['FoodUnit'].nil? \
       and entities['Food'].count > 1 \
       and Food.where(name: entities['Food'].join).exists?
       entities['Food'] = [entities['Food'].join]
+    end
+
+    entities = merge_context(entities, request['context'])
+
+    context = {}
+
+    unless entities['Food']
+      context['missingFood'] = true
+      @kakao_user.context = context.merge(previous_entities: entities)
+      return context
     end
 
     #puts "========================================"
