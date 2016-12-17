@@ -42,7 +42,8 @@ class MessageController < ApplicationController
       rescue  ApplicationError => e
         render json: { message: { text: e.message } }
       rescue => e
-        Rails.logger.error e
+        Rails.logger.error e.message
+        Rails.logger.error e.backtrace.join("\n")
         render json: { message: { text: "시스템오류입니다. 빨리 조치하도록 하겠습니다." } }
         raise ActiveRecord::Rollback
       end
@@ -136,7 +137,6 @@ class MessageController < ApplicationController
         @kakao_user.context = context.merge(previous_entities: entities)
         return context
       end
-
       food = foods.find_by(name: food_name)
       food_unit = FoodUnit.find_by(name: food_units.shift, food: food)
       meal.meal_foods << MealFood.new(food: food, food_unit: food_unit, count: number)
