@@ -11,10 +11,12 @@ class Food < ActiveRecord::Base
     .limit(12)
   }
 
+  # 공백제거
   before_create do |food|
     food.name.strip!
   end
 
+  #윗에 쏴주는거
   after_save do |instance|
     next unless instance.name_changed? or instance.synonyms_changed?
     if instance.name_changed?
@@ -25,6 +27,7 @@ class Food < ActiveRecord::Base
     instance.send_to_wit
   end
 
+  #윗에서 삭제
   after_destroy do |instance|
     wit_client.delete_values(instance.class.name, instance.name)
   end

@@ -140,7 +140,14 @@ class MessageController < ApplicationController
         @kakao_user.context = context.merge(previous_entities: entities)
         return context
       end
+
       food = foods.find_by(name: food_name)
+
+      unless food
+        missingFoodInfo << food_name
+        next
+      end
+
       food_unit = FoodUnit.find_by(name: food_units.shift, food: food)
       meal.meal_foods << MealFood.new(food: food, food_unit: food_unit, count: number)
     end
@@ -182,7 +189,7 @@ class MessageController < ApplicationController
   end
 
   def search_food(request)
-		search_query = serialize_entities(request['entities'])['Food'][0] rescue nil
+    search_query = serialize_entities(request['entities'])['Food'][0] rescue nil
     search_query ||= request['context']['searchFood']
     foods = Food.name_like(search_query)
 
