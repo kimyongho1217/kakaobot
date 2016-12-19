@@ -26,12 +26,14 @@ class MessageController < ApplicationController
                                    "아래 예시와 같이 적어주시면 칼로리가 기록됩니다.\n"\
                                    "\"고구마 1개, 바나나 1개\"\n"\
                                    "\"아메리카노\"" } }
+          @kakao_user.context = {} unless @kakao_user.context.blank?
         when params[:content] == "도움말"
           res = { message: { text:  "아래와 같이 적어보세요\n"\
                                     "\"아메리카노\"\n"\
                                     "\"고구마 1개, 바나나 1개\"\n"\
                                     "\"오늘 얼마나 먹었지?\"\n"\
                                     "\"남은 칼로리\"" } }
+          @kakao_user.context = {} unless @kakao_user.context.blank?
         else
           @rsp = wit_client.async.run_actions(@kakao_user.session_id, params[:content], @kakao_user.context || {})
           res = @rsp.value!
