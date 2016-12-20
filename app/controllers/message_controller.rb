@@ -159,7 +159,10 @@ class MessageController < ApplicationController
     end
 
     context['missingFoodInfo'] = missingFoodInfo.join(", ") unless missingFoodInfo.empty?
-    return context if missingFoodInfo.count == entities['Food'].count
+    if missingFoodInfo.count == entities['Food'].count
+      @kakao_user.context = {} unless @kakao_user.context.blank?
+      return context
+    end
 
     if meal.meal_foods.count > 1
       context['foodConsumed'] = meal.meal_foods.includes(:food).map do |meal_food|
