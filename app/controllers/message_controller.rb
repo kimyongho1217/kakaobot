@@ -40,7 +40,11 @@ class MessageController < ApplicationController
         end
 
         render json: res
-        @kakao_user.save if @kakao_user.changed?
+
+        if @kakao_user.changed?
+          @kakao_user.regenerate_session_id if @kakao_user.context.blank?
+          @kakao_user.save
+        end
       rescue  ApplicationError => e
         render json: { message: { text: e.message } }
       rescue => e
