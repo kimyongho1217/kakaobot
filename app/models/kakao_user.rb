@@ -131,6 +131,6 @@ class KakaoUser < ActiveRecord::Base
         "athlete": 1.9
       }[active_type.to_sym]
     end
-    self.recommended_calories = recommended_calories
+    self.recommended_calories = recommended_calories*1.1
   end
 end
