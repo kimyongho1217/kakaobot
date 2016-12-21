@@ -2,7 +2,7 @@
 lock '3.6.1'
 
 set :application, 'kakaobot'
-set :repo_url, 'git@github.com:nerdyfactory/kakaobot.git'
+set :repo_url, 'git@github.com:kimyongho1217/kakaobot.git'
 
 # Default branch is :master
 ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
