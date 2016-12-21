@@ -1,4 +1,14 @@
 ActiveAdmin.register Meal do
+  index do
+    selectable_column
+    id_column
+    column :total_calorie_consumption
+    column :foods do |meal|
+      meal.meal_foods.includes(:food).map {|mf| mf.food.name rescue "" }.join(", ")
+    end
+    actions
+  end
+
   show do
     attributes_table do
       row :id
