@@ -22,10 +22,7 @@ class MessageController < ApplicationController
           res = @kakao_user.get_response
 
         when params[:content] == "먹은 음식 적기"
-          res = { message: { text: "안녕하세요. 식사 잘 하셨나요? ^^\n"\
-                                   "아래 예시와 같이 적어주시면 칼로리가 기록됩니다.\n"\
-                                   "\"고구마 1개, 바나나 1개\"\n"\
-                                   "\"아메리카노\"" } }
+          res = { message: { text: "안녕하세요. 무엇을 드셨나요?" } }
           @kakao_user.context = {} unless @kakao_user.context.blank?
         when params[:content] == "도움말"
           res = { message: { text:  "아래와 같이 적어보세요\n"\
