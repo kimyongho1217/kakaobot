@@ -1,4 +1,12 @@
 ActiveAdmin.register FoodUnit do
+  active_admin_import timestamps: true,
+    on_duplicate_key_update: { columns: [:name, :weight_per_unit, :synonyms_raw] },
+    before_batch_import: proc { |import|
+      import.csv_lines.uniq! {|line| line.first }
+    }
+
+
+
   permit_params :name, :weight_per_unit, :synonyms_raw, :food_id
   form do |f|
     f.inputs "Food" do
